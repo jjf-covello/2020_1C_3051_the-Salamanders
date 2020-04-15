@@ -1,3 +1,4 @@
+using BulletSharp.Math;
 using Microsoft.DirectX.DirectInput;
 using System.Drawing;
 using TGC.Core.Direct3D;
@@ -6,7 +7,9 @@ using TGC.Core.Geometry;
 using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
+using TGC.Core.Terrain;
 using TGC.Core.Textures;
+
 
 namespace TGC.Group.Model
 {
@@ -31,6 +34,13 @@ namespace TGC.Group.Model
         }
         private TgcScene scene;
         private TgcMesh mainMesh;
+        private TgcScene myHeightmap;
+
+        TgcSimpleTerrain moonLandscape = new TgcSimpleTerrain();
+        string currentHeightmap;
+        string currentTexture;
+        float currentScaleXZ;
+        float currentScaleY;
 
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
@@ -73,7 +83,18 @@ namespace TGC.Group.Model
             //Mesh = new TgcSceneLoader().loadSceneFromFile(MediaDir + "MeshCreator\\Scenes\\Selva\\Selva-TgcScene.xml").Meshes[0];
 
             var loader = new TgcSceneLoader();
-            scene = loader.loadSceneFromFile(MediaDir + "MeshCreator\\Scenes\\Deposito\\Deposito-TgcScene.xml");
+            //scene = loader.loadSceneFromFile(MediaDir + "MeshCreator\\Scenes\\Deposito\\Deposito-TgcScene.xml");
+
+            // COMO PIJA CARGO MI HEIGHTMAP
+            currentScaleXZ = 60f;
+            currentScaleY = 60f;
+
+            currentHeightmap = MediaDir + "Heighmaps\\heightmapOurMap.jpg";
+            currentTexture = MediaDir + "SistemaSolar\\MoonTexture.jpg";
+
+            moonLandscape.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new TGCVector3(0, -1, 0));
+            moonLandscape.loadTexture(currentTexture);
+
 
             var scene2 = loader.loadSceneFromFile(MediaDir + "MeshCreator\\Meshes\\Esqueletos\\EsqueletoHumano2\\Esqueleto2-TgcScene.xml");
 
@@ -153,7 +174,9 @@ namespace TGC.Group.Model
             //Finalmente invocamos al render de la caja
             Box.Render();
 
-            scene.RenderAll();
+            //scene.RenderAll();
+
+            moonLandscape.Render();
 
             mainMesh.Render();
 
@@ -185,7 +208,8 @@ namespace TGC.Group.Model
             Box.Dispose();
             //Dispose del mesh.
             //Mesh.Dispose();
-            scene.DisposeAll();
+            //scene.DisposeAll();
+            moonLandscape.Dispose();
             mainMesh.Dispose();
         }
     }
