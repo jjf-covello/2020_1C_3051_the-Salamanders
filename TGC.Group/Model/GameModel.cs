@@ -7,6 +7,8 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
+using TGC.Core.Camara;
+using TGC.Core.Example;
 
 namespace TGC.Group.Model
 {
@@ -33,9 +35,11 @@ namespace TGC.Group.Model
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
 
+        //TgcRotationalCamera CamaraRotacional { get; set; }
         //Mesh de TgcLogo.
         private TgcMesh Mesh { get; set; }
-
+        private TgcMesh fondo { get; set; }
+        private TgcScene tgcScene { get; set; }
         //Boleano para ver si dibujamos el boundingbox
         private bool BoundingBox { get; set; }
 
@@ -58,6 +62,12 @@ namespace TGC.Group.Model
             //Es importante cargar texturas en Init, si se hace en el render loop podemos tener grandes problemas si instanciamos muchas.
             var texture = TgcTexture.createTexture(pathTexturaCaja);
 
+            TgcSceneLoader loader = new TgcSceneLoader();
+            tgcScene = loader.loadSceneFromFile(MediaDir + "EscenarioPortal\\EscenarioPortal-TgcScene.xml");
+           
+
+            //fondo.Scale=new TGCVector3(0.5f, 0.5f, 0.5f);
+
             //Creamos una caja 3D ubicada de dimensiones (5, 10, 5) y la textura como color.
             var size = new TGCVector3(5, 10, 5);
             //Construimos una caja según los parámetros, por defecto la misma se crea con centro en el origen y se recomienda así para facilitar las transformaciones.
@@ -67,9 +77,9 @@ namespace TGC.Group.Model
             Box.Position = new TGCVector3(-25, 0, 0);
 
             //Cargo el unico mesh que tiene la escena.
-            Mesh = new TgcSceneLoader().loadSceneFromFile(MediaDir + "LogoTGC-TgcScene.xml").Meshes[0];
+           // Mesh = new TgcSceneLoader().loadSceneFromFile(MediaDir + "LogoTGC-TgcScene.xml").Meshes[0];
             //Defino una escala en el modelo logico del mesh que es muy grande.
-            Mesh.Scale = new TGCVector3(0.5f, 0.5f, 0.5f);
+           // Mesh.Scale = new TGCVector3(0.5f, 0.5f, 0.5f);
 
             //Suelen utilizarse objetos que manejan el comportamiento de la camara.
             //Lo que en realidad necesitamos gráficamente es una matriz de View.
@@ -77,8 +87,17 @@ namespace TGC.Group.Model
             //Posición de la camara.
             var cameraPosition = new TGCVector3(0, 0, 125);
             //Quiero que la camara mire hacia el origen (0,0,0).
-            var lookAt = TGCVector3.Empty;
+            
             //Configuro donde esta la posicion de la camara y hacia donde mira.
+
+            Mesh = loader.loadSceneFromFile(MediaDir + "MeshCreator\\Meshes\\Vehiculos\\Hummer\\Hummer-TgcScene.xml").Meshes[0];
+            Mesh.Position += new TGCVector3(100, 37, -200);
+            Mesh.Rotation += new TGCVector3(0, FastMath.QUARTER_PI, 0);
+            Mesh.Transform = TGCMatrix.Scaling(TGCVector3.One) * TGCMatrix.RotationYawPitchRoll(Mesh.Rotation.Y, Mesh.Rotation.X, Mesh.Rotation.Z) * TGCMatrix.Translation(Mesh.Position);
+            //CamaraRotacional = new TgcCamera(); //(Mesh.BoundingBox.calculateBoxCenter(), Mesh.BoundingBox.calculateBoxRadius() * 6, Input);
+
+            var lookAt = Mesh.Position;
+
             Camara.SetCamera(cameraPosition, lookAt);
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas.
@@ -99,6 +118,7 @@ namespace TGC.Group.Model
                 BoundingBox = !BoundingBox;
             }
 
+            
             //Capturar Input Mouse
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
@@ -140,15 +160,17 @@ namespace TGC.Group.Model
 
             //Cuando tenemos modelos mesh podemos utilizar un método que hace la matriz de transformación estándar.
             //Es útil cuando tenemos transformaciones simples, pero OJO cuando tenemos transformaciones jerárquicas o complicadas.
-            Mesh.UpdateMeshTransform();
+
+            tgcScene.Meshes.ForEach(mesh=>mesh.UpdateMeshTransform());
             //Render del mesh
-            Mesh.Render();
+            tgcScene.Meshes.ForEach(mesh => mesh.Render());
 
             //Render de BoundingBox, muy útil para debug de colisiones.
             if (BoundingBox)
             {
                 Box.BoundingBox.Render();
-                Mesh.BoundingBox.Render();
+                tgcScene.Meshes.ForEach(mesh => mesh.BoundingBox.Render());
+                //fondo.BoundingBox.Render();
             }
 
             //Finaliza el render y presenta en pantalla, al igual que el preRender se debe para casos puntuales es mejor utilizar a mano las operaciones de EndScene y PresentScene
@@ -165,7 +187,8 @@ namespace TGC.Group.Model
             //Dispose de la caja.
             Box.Dispose();
             //Dispose del mesh.
-            Mesh.Dispose();
+            tgcScene.Meshes.ForEach(mesh => mesh.Dispose());
+            //fondo.Dispose();
         }
     }
 }
