@@ -8,6 +8,7 @@ using TGC.Core.Mathematica;
 using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Camara;
+using TGC.Core.Terrain;
 
 namespace TGC.Group.Model
 {
@@ -52,11 +53,12 @@ namespace TGC.Group.Model
         {
             //Device de DirectX para crear primitivas.
             var d3dDevice = D3DDevice.Instance.Device;
-
+            
             escenario.InstanciarEstructuras();
             escenario.InstanciarHeightmap();
+            escenario.InstanciarSkyBox();
 
-            var cameraPosition = new TGCVector3(0, 0, 125);
+            var cameraPosition = new TGCVector3(-2500, 0, -15000);
             var lookAt = new TGCVector3(0, 0, 0);
             Camara.SetCamera(cameraPosition, lookAt);
             //Internamente el framework construye la matriz de view con estos dos vectores.
