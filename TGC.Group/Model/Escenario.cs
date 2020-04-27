@@ -34,21 +34,19 @@ namespace TGC.Group.Model
 
         public void InstanciarSkyBox()
         {
-            string texturesPath = MediaDir + "SkyBoxPiolasa.jpg";
-
             //Configurar tamaño SkyBox
-            skyBox.Center = new TGCVector3(0, 0, 0);
-            skyBox.Size = new TGCVector3(10000, 10000, 10000);
+            skyBox.Center = new TGCVector3(-250, 0, -1500);
+            skyBox.Size = new TGCVector3(15000, 15000, 15000);
 
             //Configurar las texturas para cada una de las 6 caras
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, texturesPath);
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, texturesPath);
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, texturesPath);
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, texturesPath);
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, MediaDir + "Sky.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Down, MediaDir + "Sky.jpg");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Left, MediaDir + "Sky 3.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Right, MediaDir + "Sky 4.png");
 
             //Hay veces es necesario invertir las texturas Front y Back si se pasa de un sistema RightHanded a uno LeftHanded
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, texturesPath);
-            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, texturesPath);
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Front, MediaDir + "Sky 1.png");
+            skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Back, MediaDir + "Sky 2.png");
 
             //Inicializa las configuraciones del skybox
             skyBox.Init();
@@ -59,7 +57,7 @@ namespace TGC.Group.Model
             currentScaleXZ = 600f;
             currentScaleY = 301f;
 
-            currentHeightmap = MediaDir + "Heighmaps\\heightmapUsarEsteDeBase.jpg";
+            currentHeightmap = MediaDir + "Heighmaps\\alfajorGrandote.jpg";
             currentTexture = MediaDir + "Heighmaps\\Grass.jpg";
 
             heightmap.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new TGCVector3(0, -10, 0));
@@ -71,9 +69,9 @@ namespace TGC.Group.Model
             tgcScene.Meshes.ForEach(mesh => mesh.UpdateMeshTransform());
             tgcScene.Meshes.ForEach(mesh => mesh.Render());
 
-           // heightmap.Render();
+            heightmap.Render();
 
-           // skyBox.Render();
+            //skyBox.Render();
         }
 
         public void DisposeEscenario()
