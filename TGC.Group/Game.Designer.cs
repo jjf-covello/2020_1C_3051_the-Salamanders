@@ -49,7 +49,7 @@ namespace TGC.Group {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Survival Horror - Artemis Moon Program")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Survival Horror - One Night In The Forest")]
         public string Description {
             get {
                 return ((string)(this["Description"]));
