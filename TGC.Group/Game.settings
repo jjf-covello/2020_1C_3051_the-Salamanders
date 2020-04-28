@@ -9,7 +9,7 @@
       <Value Profile="(Default)">The Salamanders</Value>
     </Setting>
     <Setting Name="Description" Type="System.String" Scope="User">
-      <Value Profile="(Default)">Survival Horror - Artemis Moon Program</Value>
+      <Value Profile="(Default)">Survival Horror - One Night In The Forest</Value>
     </Setting>
     <Setting Name="ShadersDirectory" Type="System.String" Scope="User">
       <Value Profile="(Default)">..\..\..\Shaders\</Value>
