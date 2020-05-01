@@ -32,6 +32,7 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
         }
         Escenario escenario = new Escenario();
+        Personaje personaje = new Personaje();
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
 
@@ -57,12 +58,23 @@ namespace TGC.Group.Model
             escenario.InstanciarEstructuras();
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
+            personaje.InstanciarPersonaje();
 
+
+            /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
             var lookAt = new TGCVector3(0, 0, 0);
             Camara.SetCamera(cameraPosition, lookAt);
+            */
+
+            //TODO: Hacer que la camara siga a la bounding box
+            MiCamara camaraInterna = new MiCamara(personaje.PosicionMesh(), 220, 300);
+            Camara = camaraInterna;
+
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas.
+
+
         }
 
         /// <summary>
@@ -73,7 +85,7 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-
+            
             //Capturar Input teclado
             if (Input.keyPressed(Key.F))
             {
@@ -110,6 +122,7 @@ namespace TGC.Group.Model
             PreRender();
 
             escenario.RenderEscenario();
+            personaje.RenderPersonaje(ElapsedTime);
 
             //Render de BoundingBox, muy útil para debug de colisiones.
             if (BoundingBox)
@@ -131,6 +144,7 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             escenario.DisposeEscenario();
+            personaje.DisposePersonaje();
         }
     }
 }
