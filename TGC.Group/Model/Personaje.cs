@@ -19,6 +19,7 @@ namespace TGC.Group.Model
         private TgcSkeletalBoneAttach attachment;
         private TgcSkeletalMesh mesh;
         private string selectedAnim;
+        private const float velocidad_movimiento = 100f;
         String MediaDir = "..\\..\\..\\Media\\";
 
         public void InstanciarPersonaje()
@@ -56,7 +57,6 @@ namespace TGC.Group.Model
             TgcSkeletalLoader loader = new TgcSkeletalLoader();
             mesh = loader.loadMeshAndAnimationsFromFile(pathMesh, mediaPath, animationsPath);
 
-            mesh.playAnimation("Walk", true);
             mesh.Transform = TGCMatrix.Scaling(2f,2f,2f);
             mesh.Position = new TGCVector3(100, 15, 100);
             //mesh.rotateY(Geometry.DegreeToRadian(180f));
@@ -95,6 +95,49 @@ namespace TGC.Group.Model
         public TGCVector3 PosicionMesh()
         {
             return mesh.Position;
+        }
+
+        public void animarPersonaje(bool caminar)
+        {
+            if(caminar)
+            {
+                mesh.stopAnimation();
+                mesh.playAnimation("Walk", true);
+            }
+            else
+            {
+                mesh.stopAnimation();
+                mesh.playAnimation("StandBy", true);
+            }
+        }
+
+        public void MoverPersonaje(char key, float elapsedTime)
+        {
+            var movimiento = TGCVector3.Empty;
+            var posicionOriginal = mesh.Position;
+
+            switch (key)
+            {
+                case 'W':
+                    movimiento.Z = -1;
+                    break;
+
+                case 'A':
+                    movimiento.X = 1;
+                    break;
+
+                case 'S':
+                    movimiento.Z = 1;
+                    break;
+
+                case 'D':
+                    movimiento.X = -1;
+                    break;
+            }
+
+            movimiento *= velocidad_movimiento * elapsedTime;
+            mesh.Position = mesh.Position + movimiento;
+            mesh.Transform = TGCMatrix.Translation(mesh.Position);
         }
     }
 }

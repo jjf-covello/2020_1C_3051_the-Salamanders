@@ -71,6 +71,8 @@ namespace TGC.Group.Model
             MiCamara camaraInterna = new MiCamara(personaje.PosicionMesh(), 220, 300);
             Camara = camaraInterna;
 
+            
+
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas.
 
@@ -85,14 +87,43 @@ namespace TGC.Group.Model
         public override void Update()
         {
             PreUpdate();
-            
+            bool caminar = false;
             //Capturar Input teclado
             if (Input.keyPressed(Key.F))
             {
                 BoundingBox = !BoundingBox;
             }
 
-            
+            if (Input.keyDown(Key.W))
+            {
+                //Le digo al wachin que vaya para adelante
+                personaje.MoverPersonaje('W', ElapsedTime);
+                caminar = true;
+            }
+
+            if (Input.keyDown(Key.A))
+            {
+                //Le digo al wachin que vaya para la izquierda
+                personaje.MoverPersonaje('A', ElapsedTime);
+                caminar = true;
+            }
+
+            if (Input.keyDown(Key.S))
+            {
+                //Le digo al wachin que vaya a para atras
+                personaje.MoverPersonaje('S', ElapsedTime);
+                caminar = true;
+            }
+
+            if (Input.keyDown(Key.D))
+            {
+                //Le digo al wachin que vaya para la derecha
+                personaje.MoverPersonaje('D', ElapsedTime);
+                caminar = true;
+            }
+
+            personaje.animarPersonaje(caminar);
+
             //Capturar Input Mouse
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
