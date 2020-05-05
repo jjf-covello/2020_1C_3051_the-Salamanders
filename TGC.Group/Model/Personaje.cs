@@ -24,13 +24,13 @@ namespace TGC.Group.Model
 
         public void InstanciarPersonaje()
         {
-            
+
             //Paths para archivo XML de la malla
             var pathMesh = MediaDir + "SkeletalAnimations\\BasicHuman\\WomanJeans-TgcSkeletalMesh.xml";
 
             //Path para carpeta de texturas de la malla
             var mediaPath = MediaDir + "SkeletalAnimations\\BasicHuman\\";
-            
+
             //Lista de animaciones disponibles
             string[] animationList =
             {
@@ -57,8 +57,8 @@ namespace TGC.Group.Model
             TgcSkeletalLoader loader = new TgcSkeletalLoader();
             mesh = loader.loadMeshAndAnimationsFromFile(pathMesh, mediaPath, animationsPath);
 
-            mesh.Transform = TGCMatrix.Scaling(2f,2f,2f);
-            mesh.Position = new TGCVector3(100, 15, 100);
+            mesh.Transform = TGCMatrix.Scaling(2f, 2f, 2f);
+            mesh.Position = new TGCVector3(100, 50, 100);
             //mesh.rotateY(Geometry.DegreeToRadian(180f));
 
             //Crear esqueleto a modo Debug
@@ -99,7 +99,7 @@ namespace TGC.Group.Model
 
         public void animarPersonaje(bool caminar)
         {
-            if(caminar)
+            if (caminar)
             {
                 mesh.stopAnimation();
                 mesh.playAnimation("Walk", true);
@@ -111,6 +111,7 @@ namespace TGC.Group.Model
             }
         }
 
+        
         public void MoverPersonaje(char key, float elapsedTime)
         {
             var movimiento = TGCVector3.Empty;
@@ -143,5 +144,7 @@ namespace TGC.Group.Model
             mesh.Position = mesh.Position + movimiento;
             mesh.Transform = TGCMatrix.Translation(mesh.Position);
         }
+    
     }
 }
+

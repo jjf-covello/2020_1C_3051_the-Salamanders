@@ -33,6 +33,7 @@ namespace TGC.Group.Model
         }
         Escenario escenario = new Escenario();
         Personaje personaje = new Personaje();
+        FpCamera camarita = new FpCamera();
       
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
@@ -67,11 +68,13 @@ namespace TGC.Group.Model
             Camara.SetCamera(cameraPosition, lookAt);
             */
 
-            //TODO: Hacer que la camara siga a la bounding box
-            MiCamara camaraInterna = new MiCamara(personaje.PosicionMesh(), 220, 300);
-            Camara = camaraInterna;
+            //ESTA ORIGINALMENTE FUNCIONA
+            // MiCamara camaraInterna = new MiCamara(personaje.PosicionMesh(), 220, 300);
+            //Camara = camaraInterna;
 
-
+            //ESTE VA QUERIENDO
+            Camara = camarita;
+            Camara.SetCamera(personaje.PosicionMesh(), new TGCVector3(0, 0, 0));
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas
 
@@ -92,6 +95,7 @@ namespace TGC.Group.Model
                 BoundingBox = !BoundingBox;
             }
 
+          
             if (Input.keyDown(Key.W))
             {
                 //Le digo al wachin que vaya para adelante
@@ -119,10 +123,11 @@ namespace TGC.Group.Model
                 personaje.MoverPersonaje('D', ElapsedTime);
                 caminar = true;
             }
+            
 
             personaje.animarPersonaje(caminar);
 
-         
+            camarita.updateCamera(ElapsedTime, Input);
             //camaraInterna.updateCamera(ElapsedTime, Input);
 
             //Capturar Input Mouse
