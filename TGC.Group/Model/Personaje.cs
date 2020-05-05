@@ -120,18 +120,22 @@ namespace TGC.Group.Model
             {
                 case 'W':
                     movimiento.Z = -1;
+
                     break;
 
                 case 'A':
                     movimiento.X = 1;
+
                     break;
 
                 case 'S':
                     movimiento.Z = 1;
+                    mesh.Transform.RotateY(FastMath.PI_HALF);
                     break;
 
                 case 'D':
                     movimiento.X = -1;
+                    mesh.Transform.RotateY(FastMath.PI_HALF);
                     break;
             }
 

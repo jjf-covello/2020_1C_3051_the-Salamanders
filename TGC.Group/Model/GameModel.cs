@@ -33,6 +33,7 @@ namespace TGC.Group.Model
         }
         Escenario escenario = new Escenario();
         Personaje personaje = new Personaje();
+      
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
 
@@ -60,7 +61,6 @@ namespace TGC.Group.Model
             escenario.InstanciarSkyBox();
             personaje.InstanciarPersonaje();
 
-
             /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
             var lookAt = new TGCVector3(0, 0, 0);
@@ -71,11 +71,9 @@ namespace TGC.Group.Model
             MiCamara camaraInterna = new MiCamara(personaje.PosicionMesh(), 220, 300);
             Camara = camaraInterna;
 
-            
 
             //Internamente el framework construye la matriz de view con estos dos vectores.
-            //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas.
-
+            //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas
 
         }
 
@@ -124,7 +122,11 @@ namespace TGC.Group.Model
 
             personaje.animarPersonaje(caminar);
 
+         
+            //camaraInterna.updateCamera(ElapsedTime, Input);
+
             //Capturar Input Mouse
+            /*
             if (Input.buttonUp(TgcD3dInput.MouseButtons.BUTTON_LEFT))
             {
                 //Como ejemplo podemos hacer un movimiento simple de la cámara.
@@ -138,7 +140,7 @@ namespace TGC.Group.Model
                     Camara.SetCamera(new TGCVector3(Camara.Position.X, 0f, Camara.Position.Z), Camara.LookAt);
                 }
             }
-
+            */
             PostUpdate();
         }
 
