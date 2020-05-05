@@ -239,6 +239,8 @@ namespace TGC.Group.Model
             bool moved = false;
             TGCVector3 movement = new TGCVector3(0.0f, 0.0f, 0.0f);
 
+            
+
             if (input.keyDown(Key.W))
             {
                 movement += forward * (MovementSpeed * elapsedTime * ForwardFactor);
@@ -414,7 +416,45 @@ namespace TGC.Group.Model
         {
            // MovementSound.dispose();
         }
+
+        public void MoverPersonaje(char key, float elapsedTime)
+        {
+            MovementSpeed = 250.0f;
+            var movimiento = TGCVector3.Empty;
+            var posicionOriginal = this.Position;
+
+            switch (key)
+            {
+                case 'W':
+                    movimiento.Z = -1;
+
+                    break;
+
+                case 'A':
+                    movimiento.X = 1;
+
+                    break;
+
+                case 'S':
+                    movimiento.Z = 1;
+                    break;
+
+                case 'D':
+                    movimiento.X = -1;
+                    break;
+            }
+
+            movimiento *= MovementSpeed * elapsedTime;
+            this.Position = this.Position + movimiento;
+            eye.TransformCoordinate(TGCMatrix.Translation(this.Position));
+            //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
+
+            this.SetCamera(this.Position, eye);
+            //this.Transform = TGCMatrix.Translation(this.Position);
+        }
+
     }
 }
+
 
 

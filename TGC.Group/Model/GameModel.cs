@@ -75,6 +75,8 @@ namespace TGC.Group.Model
             //ESTE VA QUERIENDO
             Camara = camarita;
             Camara.SetCamera(personaje.PosicionMesh(), new TGCVector3(0, 0, 0));
+            
+           
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas
 
@@ -99,28 +101,28 @@ namespace TGC.Group.Model
             if (Input.keyDown(Key.W))
             {
                 //Le digo al wachin que vaya para adelante
-                personaje.MoverPersonaje('W', ElapsedTime);
+                camarita.MoverPersonaje('W', ElapsedTime);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.A))
             {
                 //Le digo al wachin que vaya para la izquierda
-                personaje.MoverPersonaje('A', ElapsedTime);
+                camarita.MoverPersonaje('A', ElapsedTime);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.S))
             {
                 //Le digo al wachin que vaya a para atras
-                personaje.MoverPersonaje('S', ElapsedTime);
+                camarita.MoverPersonaje('S', ElapsedTime);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.D))
             {
                 //Le digo al wachin que vaya para la derecha
-                personaje.MoverPersonaje('D', ElapsedTime);
+                camarita.MoverPersonaje('D', ElapsedTime);
                 caminar = true;
             }
             
