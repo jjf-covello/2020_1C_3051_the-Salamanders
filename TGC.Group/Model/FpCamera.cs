@@ -13,6 +13,7 @@ using TGC.Core.Input;
 using TGC.Core.Mathematica;
 using TGC.Core.BoundingVolumes;
 using Device = Microsoft.DirectX.Direct3D.Device;
+using BulletSharp;
 
 namespace TGC.Group.Model
 {
@@ -75,6 +76,10 @@ namespace TGC.Group.Model
         /// </summary>
         float absoluteRotationX;
 
+        char key_left;
+        char key_back;
+        char key_right;
+        char key_forward;
         public float MovementSpeed { get; set; }
 
         /// <summary>
@@ -184,6 +189,10 @@ namespace TGC.Group.Model
             yAxis = new TGCVector3();
             zAxis = new TGCVector3();
             forward = new TGCVector3();
+             key_left='A';
+             key_back = 'S';
+             key_right = 'D';
+             key_forward = 'W';
 
             absoluteRotationX = 0.0f;
 
@@ -297,6 +306,7 @@ namespace TGC.Group.Model
             // controlar los limites de rotacion sobre X (pitch)
             //
 
+           
             absoluteRotationX += rotX;
 
             if (absoluteRotationX > maxTopAngle)
@@ -333,7 +343,50 @@ namespace TGC.Group.Model
             //
 
             forward = TGCVector3.Cross(xAxis, up);
+            
             forward.Normalize();
+            if (Math.Abs(forward.X) > Math.Abs(forward.Y) + Math.Abs(forward.Z))
+            {
+                if (forward.X > 0) {
+
+                    key_right='S';
+                    key_back = 'A';
+                    key_forward = 'D';
+                    key_left = 'W';
+                } else {
+                    key_right = 'W';
+                    key_back = 'D';
+                    key_forward = 'A';
+                    key_left = 'S';
+                }
+               
+
+                //miro para adelante en x
+            }
+            else if (Math.Abs(forward.Y) > Math.Abs(forward.X) + Math.Abs(forward.Z))
+            {
+                //miro para adelante en Y
+
+            }
+            else {
+                //Miro para adelante en z
+                if (forward.Z > 0)
+                {
+                    key_right = 'A';
+                    key_back = 'W';
+                    key_forward = 'S';
+                    key_left = 'D';
+
+                }
+                else
+                {
+                    key_right = 'D';
+                    key_back = 'S';
+                    key_forward = 'W';
+                    key_left = 'A';
+                    
+                }
+            }
 
             target = eye + zAxis;
 
@@ -417,43 +470,57 @@ namespace TGC.Group.Model
            // MovementSound.dispose();
         }
 
-        public void MoverPersonaje(char key, float elapsedTime)
+        public void MoverPersonaje(char key, float elapsedTime, TgcD3dInput input)
         {
             MovementSpeed = 250.0f;
             var movimiento = TGCVector3.Empty;
             var posicionOriginal = this.Position;
 
-            switch (key)
-            {
-                case 'W':
+           if(key== key_forward)                    
                     movimiento.Z = -1;
 
-                    break;
 
-                case 'A':
+            if (key == key_left)
                     movimiento.X = 1;
 
-                    break;
 
-                case 'S':
+            if (key == key_back)
                     movimiento.Z = 1;
-                    break;
 
-                case 'D':
+            if (key == key_right)
                     movimiento.X = -1;
-                    break;
-            }
+                    
 
             movimiento *= MovementSpeed * elapsedTime;
             this.Position = this.Position + movimiento;
-            eye.TransformCoordinate(TGCMatrix.Translation(this.Position));
+            
+            //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
+            float rotY = input.XposRelative * rotationSpeed;
+            float rotX = input.YposRelative * rotationSpeed;
+            eye = this.Position;
+            target += movimiento;
+            if (lockMouse)
+            {
+                if (rotY != 0.0f || rotX != 0.0f)
+                    look(rotX, rotY);
+
+               
+
+                Cursor.Position = windowCenter;
+                
+            }
+
+                this.SetCamera(eye, target);
+
             //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
 
-            this.SetCamera(this.Position, eye);
             //this.Transform = TGCMatrix.Translation(this.Position);
         }
+ 
 
+      
     }
+     
 }
 
 

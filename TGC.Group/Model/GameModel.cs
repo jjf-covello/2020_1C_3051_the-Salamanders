@@ -101,28 +101,28 @@ namespace TGC.Group.Model
             if (Input.keyDown(Key.W))
             {
                 //Le digo al wachin que vaya para adelante
-                camarita.MoverPersonaje('W', ElapsedTime);
+                camarita.MoverPersonaje('W', ElapsedTime,Input);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.A))
             {
                 //Le digo al wachin que vaya para la izquierda
-                camarita.MoverPersonaje('A', ElapsedTime);
+                camarita.MoverPersonaje('A', ElapsedTime, Input);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.S))
             {
                 //Le digo al wachin que vaya a para atras
-                camarita.MoverPersonaje('S', ElapsedTime);
+                camarita.MoverPersonaje('S', ElapsedTime, Input);
                 caminar = true;
             }
 
             if (Input.keyDown(Key.D))
             {
                 //Le digo al wachin que vaya para la derecha
-                camarita.MoverPersonaje('D', ElapsedTime);
+                camarita.MoverPersonaje('D', ElapsedTime, Input);
                 caminar = true;
             }
             
