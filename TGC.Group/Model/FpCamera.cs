@@ -196,9 +196,9 @@ namespace TGC.Group.Model
 
             absoluteRotationX = 0.0f;
 
-            MovementSpeed = 25.0f;
+            MovementSpeed = 50.0f;
             ForwardFactor = 1.5f;
-            RotationSpeed = 3.0f;
+            RotationSpeed = 1.5f;
             MaxTopAngle = 88.0f;
             MaxBottomAngle = -80.0f;
             CurrentSpeed = MovementSpeed;
@@ -472,7 +472,7 @@ namespace TGC.Group.Model
 
         public void MoverPersonaje(char key, float elapsedTime, TgcD3dInput input)
         {
-            MovementSpeed = 250.0f;
+            MovementSpeed = 800.0f;
             var movimiento = TGCVector3.Empty;
             var posicionOriginal = this.Position;
 

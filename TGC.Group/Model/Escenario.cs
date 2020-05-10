@@ -55,12 +55,12 @@ namespace TGC.Group.Model
         public void InstanciarHeightmap() //va en el init()
         {
             currentScaleXZ = 600f;
-            currentScaleY = 301f;
+            currentScaleY = 100f;
 
             currentHeightmap = MediaDir + "Heighmaps\\alfajorGrandote.jpg";
             currentTexture = MediaDir + "Heighmaps\\Grass.jpg";
 
-            heightmap.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new TGCVector3(0, -10, 0));
+            heightmap.loadHeightmap(currentHeightmap, currentScaleXZ, currentScaleY, new TGCVector3(0, -4, 0));
             heightmap.loadTexture(currentTexture);
         }
 

@@ -34,6 +34,7 @@ namespace TGC.Group.Model
         Escenario escenario = new Escenario();
         Personaje personaje = new Personaje();
         FpCamera camarita = new FpCamera();
+        Monster monster = new Monster();
       
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
@@ -61,6 +62,8 @@ namespace TGC.Group.Model
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
             personaje.InstanciarPersonaje();
+            monster.InstanciarMonster();
+           
 
             /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
@@ -131,8 +134,10 @@ namespace TGC.Group.Model
 
                 camarita.MoverPersonaje('x', ElapsedTime, Input);
             }
-                personaje.animarPersonaje(caminar);
+
+            personaje.animarPersonaje(caminar);
             camarita.updateCamera(ElapsedTime, Input);
+            
             //camaraInterna.updateCamera(ElapsedTime, Input);
 
             //Capturar Input Mouse
@@ -166,6 +171,7 @@ namespace TGC.Group.Model
 
             escenario.RenderEscenario();
             personaje.RenderPersonaje(ElapsedTime);
+            monster.RenderMonster();
 
             //Render de BoundingBox, muy útil para debug de colisiones.
             if (BoundingBox)
@@ -188,6 +194,7 @@ namespace TGC.Group.Model
         {
             escenario.DisposeEscenario();
             personaje.DisposePersonaje();
+            monster.DisposeMonster();
         }
     }
 }
