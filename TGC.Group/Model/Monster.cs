@@ -42,9 +42,20 @@ namespace TGC.Group.Model
         }
 
         //Cuando el player no usa una fuente luminosa en X tiempo
-        public void Aparecer()
+        public void Aparecer(Personaje personaje)
         {
-
+            if (!personaje.tieneLuz && personaje.tiempoSinLuz > 1000)
+            {
+                if(personaje.tiempoSinLuz > 3000)
+                {
+                    //hacer toda la bola de la rotacion de camara
+                }
+                else
+                { 
+                    TGCVector3 posPersonaje = personaje.getPosition();
+                    this.ModificarPosicion(posPersonaje);
+                }
+            }
         }
 
         //Cuando el player usa una fuente luminosa o llega a un refugio
@@ -57,6 +68,13 @@ namespace TGC.Group.Model
         public void MirarAlJugador()
         {
 
+        }
+
+        public void ModificarPosicion(TGCVector3 posicion)
+        {
+            var posicionLejana = new TGCVector3(500, -350, 500);
+
+            ghost.Position = posicion + posicionLejana;
         }
     }
 }

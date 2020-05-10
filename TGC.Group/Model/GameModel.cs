@@ -32,8 +32,8 @@ namespace TGC.Group.Model
             Description = Game.Default.Description;
         }
         Escenario escenario = new Escenario();
+        //Depreca3 personaje = new Depreca3();
         Personaje personaje = new Personaje();
-        FpCamera camarita = new FpCamera();
         Monster monster = new Monster();
       
         //Caja que se muestra en el ejemplo.
@@ -61,7 +61,7 @@ namespace TGC.Group.Model
             escenario.InstanciarEstructuras();
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
-            personaje.InstanciarPersonaje();
+            //personaje.InstanciarPersonaje();
             monster.InstanciarMonster();
            
 
@@ -76,8 +76,8 @@ namespace TGC.Group.Model
             //Camara = camaraInterna;
 
             //ESTE VA QUERIENDO
-            Camara = camarita;
-            Camara.SetCamera(personaje.PosicionMesh(), new TGCVector3(0, 0, 0));
+            Camara = personaje;
+            //Camara.SetCamera(personaje.PosicionMesh(), new TGCVector3(0, 0, 0));
             
            
             //Internamente el framework construye la matriz de view con estos dos vectores.
@@ -101,42 +101,67 @@ namespace TGC.Group.Model
                     BoundingBox = !BoundingBox;
                 }
 
-            if (camarita.LockMouse)
+            if (personaje.LockMouse)
             {
 
                 if (Input.keyDown(Key.W))
                 {
                     //Le digo al wachin que vaya para adelante
-                    camarita.MoverPersonaje('W', ElapsedTime, Input);
+                    personaje.MoverPersonaje('W', ElapsedTime, Input);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.A))
                 {
                     //Le digo al wachin que vaya para la izquierda
-                    camarita.MoverPersonaje('A', ElapsedTime, Input);
+                    personaje.MoverPersonaje('A', ElapsedTime, Input);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.S))
                 {
                     //Le digo al wachin que vaya a para atras
-                    camarita.MoverPersonaje('S', ElapsedTime, Input);
+                    personaje.MoverPersonaje('S', ElapsedTime, Input);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.D))
                 {
                     //Le digo al wachin que vaya para la derecha
-                    camarita.MoverPersonaje('D', ElapsedTime, Input);
+                    personaje.MoverPersonaje('D', ElapsedTime, Input);
                     caminar = true;
                 }
 
-                camarita.MoverPersonaje('x', ElapsedTime, Input);
+                personaje.MoverPersonaje('x', ElapsedTime, Input);
+
+                if (Input.keyPressed(Key.E))
+                {
+                    //Interacuar con meshes
+                    
+                }
+
+                if (Input.keyPressed(Key.F))
+                {
+                    //Prende/apaga la luz de la linterna
+                }
+
+                if (Input.keyPressed(Key.R))
+                {
+                    //Recargar las pilas de la linterna
+                }
+
+                if (Input.keyPressed(Key.Q))
+                {
+                    //Cambiar entre vela y linterna (si hubiere)
+                }
+
+
             }
 
-            personaje.animarPersonaje(caminar);
-            camarita.updateCamera(ElapsedTime, Input);
+            //personaje.animarPersonaje(caminar);
+            personaje.updateCamera(ElapsedTime, Input);
+            personaje.aumentarTiempoSinLuz();
+            monster.Aparecer(personaje);
             
             //camaraInterna.updateCamera(ElapsedTime, Input);
 
@@ -170,7 +195,7 @@ namespace TGC.Group.Model
             PreRender();
 
             escenario.RenderEscenario();
-            personaje.RenderPersonaje(ElapsedTime);
+            //personaje.RenderPersonaje(ElapsedTime);
             monster.RenderMonster();
 
             //Render de BoundingBox, muy útil para debug de colisiones.
@@ -193,7 +218,7 @@ namespace TGC.Group.Model
         public override void Dispose()
         {
             escenario.DisposeEscenario();
-            personaje.DisposePersonaje();
+            //personaje.DisposePersonaje();
             monster.DisposeMonster();
         }
     }
