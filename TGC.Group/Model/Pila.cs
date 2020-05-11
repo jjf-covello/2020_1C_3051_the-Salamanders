@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace TGC.Group.Model
 {
-    class Pila : IUsable
+    class Pila : IInteractuable
     {
         public void Interactuar(Personaje personaje)
-        {
-            
-        }
-
-        public void Recolectar(Personaje personaje)
         {
             personaje.objetosInteractuables.Add(this);
         }
@@ -24,6 +19,8 @@ namespace TGC.Group.Model
             {
                 var linterna = (Linterna)personaje.objetosInteractuables.Find(objeto => objeto is Linterna);
                 linterna.Recargar();
+                
+                personaje.objetosInteractuables.Remove(this);
             }
             
         }

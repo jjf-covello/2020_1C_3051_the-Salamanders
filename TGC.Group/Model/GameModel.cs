@@ -9,6 +9,7 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Camara;
 using TGC.Core.Terrain;
+using System.Linq;
 
 namespace TGC.Group.Model
 {
@@ -143,25 +144,57 @@ namespace TGC.Group.Model
                 if (Input.keyPressed(Key.F))
                 {
                     //Prende/apaga la luz de la linterna
+                    if(personaje.getItemEnMano() is Linterna)
+                    {
+                        personaje.getItemEnMano().Usar(personaje);
+                    }
                 }
 
                 if (Input.keyPressed(Key.R))
                 {
                     //Recargar las pilas de la linterna
+                    var pila = (Pila)personaje.objetosInteractuables.Find(objeto => objeto is Pila);
+                    pila.Usar(personaje);
                 }
 
                 if (Input.keyPressed(Key.Q))
                 {
                     //Cambiar entre vela y linterna (si hubiere)
+                    if(personaje.getItemEnMano() is Linterna && personaje.objetosInteractuables.Any(objeto => objeto is Vela))
+                    {
+                        var vela = (Vela)personaje.objetosInteractuables.Find(objeto => objeto is Vela);
+                        personaje.setItemEnMano(vela);
+                    }
+
+                    if (personaje.getItemEnMano() is Vela && personaje.objetosInteractuables.Any(objeto => objeto is Linterna))
+                    {
+                        var linterna = (Linterna)personaje.objetosInteractuables.Find(objeto => objeto is Linterna);
+                        personaje.setItemEnMano(linterna);
+                    }
                 }
-
-
             }
 
             //personaje.animarPersonaje(caminar);
             personaje.updateCamera(ElapsedTime, Input);
+            
             personaje.aumentarTiempoSinLuz();
+            
             monster.Aparecer(personaje);
+
+            if (personaje.tieneLuz)
+            {
+                monster.Desaparecer();
+            }
+
+            if (personaje.TieneItemEnMano())
+            {
+                personaje.getItemEnMano().DisminuirDuracion();
+
+                if(personaje.getItemEnMano().getDuracion() <= 0)
+                {
+                    personaje.getItemEnMano().FinDuracion(personaje);
+                }
+            }
             
             //camaraInterna.updateCamera(ElapsedTime, Input);
 

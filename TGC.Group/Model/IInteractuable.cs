@@ -10,6 +10,6 @@ namespace TGC.Group.Model
     {
        void Interactuar(Personaje personaje);
 
-
+       void Usar(Personaje personaje);
     }
 }

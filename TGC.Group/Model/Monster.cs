@@ -48,7 +48,8 @@ namespace TGC.Group.Model
             {
                 if(personaje.tiempoSinLuz > 3000)
                 {
-                    //hacer toda la bola de la rotacion de camara
+                    //Hacer toda la bola de la rotacion de camara
+                    //PERDES!!!
                 }
                 else
                 { 
@@ -61,13 +62,13 @@ namespace TGC.Group.Model
         //Cuando el player usa una fuente luminosa o llega a un refugio
         public void Desaparecer()
         {
-
+            ghost.Position = new TGCVector3(0, -2000, 0); //Lo mando abajo del mapa 
         }
 
         //Rota siempre en la direccion en la que se mueve el jugador
         public void MirarAlJugador()
         {
-
+            //Again con la rotacion del mesh
         }
 
         public void ModificarPosicion(TGCVector3 posicion)

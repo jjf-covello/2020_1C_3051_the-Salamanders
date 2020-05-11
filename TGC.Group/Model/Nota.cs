@@ -6,16 +6,11 @@ using System.Threading.Tasks;
 
 namespace TGC.Group.Model
 {
-    class Nota : IRecolectable
+    class Nota : IInteractuable
     {
         public void Interactuar(Personaje personaje)
         {
-            throw new NotImplementedException();
-        }
-
-        public void Recolectar(Personaje personaje)
-        {
-            if(personaje.cantidadNotas < personaje.notasRequeridas)
+            if (personaje.cantidadNotas < personaje.notasRequeridas)
             {
                 personaje.cantidadNotas++;
             }
@@ -23,7 +18,9 @@ namespace TGC.Group.Model
             {
                 //Ganaste
             }
-            
         }
+
+        public void Usar(Personaje personaje) { }
+
     }
 }

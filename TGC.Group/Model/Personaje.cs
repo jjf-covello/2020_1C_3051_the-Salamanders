@@ -26,6 +26,17 @@ namespace TGC.Group.Model
         public int notasRequeridas = 8;
         public bool tieneLuz = false;
         public float tiempoSinLuz = 0;
+        IEquipable itemEnMano;
+
+        public IEquipable getItemEnMano()
+        {
+            return itemEnMano;
+        }
+
+        public void setItemEnMano(IEquipable nuevoItemEnMano)
+        {
+            itemEnMano = nuevoItemEnMano;
+        }
 
         public bool Enable { get; set; }
 
@@ -528,11 +539,39 @@ namespace TGC.Group.Model
 
         public void aumentarTiempoSinLuz()
         {
-            this.tiempoSinLuz++;
+            if (!this.tieneLuz)
+            {
+                this.tiempoSinLuz++;
+            }
         }
         
+        public void InteractuarConObjeto(IInteractuable objeto)
+        {
+            objeto.Interactuar(this);
+        }
 
-      
+        public void UsarItemEnMano()
+        {
+            itemEnMano.Usar(this);
+        }
+
+        public void EquiparVela()
+        {
+            var vela = (Vela)objetosInteractuables.Find(objeto => objeto is Vela);
+            itemEnMano = vela;
+        }
+
+        public void EquiparLinterna()
+        {
+            var linterna = (Linterna)objetosInteractuables.Find(objeto => objeto is Linterna);
+            itemEnMano = linterna;
+        }
+
+        public bool TieneItemEnMano()
+        {
+            return this.getItemEnMano() != null;
+        }
+    
     }
      
 }
