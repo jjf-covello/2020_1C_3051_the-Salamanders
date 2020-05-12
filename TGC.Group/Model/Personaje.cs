@@ -26,6 +26,7 @@ namespace TGC.Group.Model
         public int notasRequeridas = 8;
         public bool tieneLuz = false;
         public float tiempoSinLuz = 0;
+
         IEquipable itemEnMano;
 
         public IEquipable getItemEnMano()
@@ -571,7 +572,17 @@ namespace TGC.Group.Model
         {
             return this.getItemEnMano() != null;
         }
-    
+
+        public void gameOver(TGCVector3 posicionDelMonster)
+        {   
+            TGCVector3 vectorDesfasaje = new TGCVector3(0, 350, 0);
+
+            vectorDesfasaje += posicionDelMonster;
+
+            this.setCamera(eye, vectorDesfasaje);
+        }
+
+
     }
      
 }

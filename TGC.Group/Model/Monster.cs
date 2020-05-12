@@ -46,10 +46,12 @@ namespace TGC.Group.Model
         {
             if (!personaje.tieneLuz && personaje.tiempoSinLuz > 1000)
             {
-                if(personaje.tiempoSinLuz > 3000)
+                if(personaje.tiempoSinLuz == 3000)
                 {
-                    //Hacer toda la bola de la rotacion de camara
-                    //PERDES!!!
+                    //El monster aparece detrás del personaje
+                    //TGCVector3 posPersonaje = personaje.getPosition();
+                    this.aparecerAlLadoDelPersonaje(personaje);
+                    personaje.gameOver(ghost.Position);
                 }
                 else
                 { 
@@ -76,6 +78,42 @@ namespace TGC.Group.Model
             var posicionLejana = new TGCVector3(500, -350, 500);
 
             ghost.Position = posicion + posicionLejana;
+        }
+
+        public void aparecerAlLadoDelPersonaje(Personaje personaje)
+        {
+            var posicionLejana = new TGCVector3(5, -350, 5);
+
+            //Me acerco al personaje
+            ghost.Position = personaje.getPosition() + posicionLejana;
+
+            //Roto el mesh del monster
+            float diferenciaEnX = personaje.getPosition().X - ghost.Position.X;
+            float diferenciaEnZ = personaje.getPosition().Z - ghost.Position.Z;
+
+            float anguloRotacion = (float)Math.Atan(diferenciaEnX / diferenciaEnZ);
+
+            if (diferenciaEnX < 0 && diferenciaEnZ < 0)
+            {
+                //3er Cuadrante
+                anguloRotacion = (float)Math.PI + anguloRotacion;
+            }
+            else if(diferenciaEnX > 0 && diferenciaEnZ > 0)
+            {
+                //1er Cuadrante
+            }
+            else if (diferenciaEnX > 0 && diferenciaEnZ < 0)
+            {
+                //4to Cuadrante
+                anguloRotacion = 2*(float)Math.PI - anguloRotacion;
+            }
+            else
+            {
+                //2do Cuadrante
+                anguloRotacion = (float)Math.PI - anguloRotacion;
+            }
+
+            ghost.RotateY(anguloRotacion);
         }
     }
 }
