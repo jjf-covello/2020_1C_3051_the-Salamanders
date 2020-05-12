@@ -10,14 +10,7 @@ namespace TGC.Group.Model
     {
         public void Interactuar(Personaje personaje)
         {
-            if (personaje.cantidadNotas < personaje.notasRequeridas)
-            {
-                personaje.cantidadNotas++;
-            }
-            else
-            {
-                //Ganaste
-            }
+            personaje.cantidadNotas++;
         }
 
         public void Usar(Personaje personaje) { }

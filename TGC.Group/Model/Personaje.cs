@@ -255,6 +255,8 @@ namespace TGC.Group.Model
         /// </summary>
         public void updateCamera(float elapsedTime, TgcD3dInput input)
         {
+            this.YouWin();
+
             if (!Enable)
                 return;
 
@@ -582,6 +584,13 @@ namespace TGC.Group.Model
             this.setCamera(eye, vectorDesfasaje);
         }
 
+        public void YouWin()
+        {
+            if (this.notasRequeridas == 8 && this.getPosition() == posicionInicial)
+            {
+                //Ganastre bro
+            } 
+        }
 
     }
      
