@@ -573,7 +573,7 @@ namespace TGC.Group.Model
             return this.getItemEnMano() != null;
         }
 
-        public void gameOver(TGCVector3 posicionDelMonster)
+        public void GameOver(TGCVector3 posicionDelMonster)
         {   
             TGCVector3 vectorDesfasaje = new TGCVector3(0, 350, 0);
 

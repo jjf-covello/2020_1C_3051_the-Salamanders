@@ -19,6 +19,7 @@ namespace TGC.Group.Model
     {
         TgcMesh ghost;
         String MediaDir = "..\\..\\..\\Media\\";
+        TGCVector3 lookAt = new TGCVector3();
         public void InstanciarMonster()
         {
             var loader = new TgcSceneLoader();
@@ -44,19 +45,18 @@ namespace TGC.Group.Model
         //Cuando el player no usa una fuente luminosa en X tiempo
         public void Aparecer(Personaje personaje)
         {
-            if (!personaje.tieneLuz && personaje.tiempoSinLuz > 1000)
+            if (!personaje.tieneLuz && personaje.tiempoSinLuz > 3500)
             {
-                if(personaje.tiempoSinLuz == 3000)
+                if (personaje.tiempoSinLuz == 4000)
+                {
+                    this.ModificarPosicion(personaje);
+                }
+
+                if (personaje.tiempoSinLuz == 5000)
                 {
                     //El monster aparece detrás del personaje
-                    //TGCVector3 posPersonaje = personaje.getPosition();
-                    this.aparecerAlLadoDelPersonaje(personaje);
-                    personaje.gameOver(ghost.Position);
-                }
-                else
-                { 
-                    TGCVector3 posPersonaje = personaje.getPosition();
-                    this.ModificarPosicion(posPersonaje);
+                    this.AparecerAlLadoDelPersonaje(personaje);
+                    personaje.GameOver(ghost.Position);
                 }
             }
         }
@@ -67,53 +67,62 @@ namespace TGC.Group.Model
             ghost.Position = new TGCVector3(0, -2000, 0); //Lo mando abajo del mapa 
         }
 
-        //Rota siempre en la direccion en la que se mueve el jugador
-        public void MirarAlJugador()
+        public void ModificarPosicion(Personaje personaje)
         {
-            //Again con la rotacion del mesh
-        }
+            var posicionLejana = new TGCVector3(1500, -350, 1500);
 
-        public void ModificarPosicion(TGCVector3 posicion)
-        {
-            var posicionLejana = new TGCVector3(500, -350, 500);
-
-            ghost.Position = posicion + posicionLejana;
-        }
-
-        public void aparecerAlLadoDelPersonaje(Personaje personaje)
-        {
-            var posicionLejana = new TGCVector3(5, -350, 5);
-
-            //Me acerco al personaje
+            //El monster se acerca al personaje
             ghost.Position = personaje.getPosition() + posicionLejana;
 
             //Roto el mesh del monster
-            float diferenciaEnX = personaje.getPosition().X - ghost.Position.X;
-            float diferenciaEnZ = personaje.getPosition().Z - ghost.Position.Z;
+            this.RotarMesh(personaje);
+        }
 
-            float anguloRotacion = (float)Math.Atan(diferenciaEnX / diferenciaEnZ);
+        public void AparecerAlLadoDelPersonaje(Personaje personaje)
+        {
+            var posicionLejana = new TGCVector3(500, -350, 500);
 
-            if (diferenciaEnX < 0 && diferenciaEnZ < 0)
-            {
-                //3er Cuadrante
-                anguloRotacion = (float)Math.PI + anguloRotacion;
-            }
-            else if(diferenciaEnX > 0 && diferenciaEnZ > 0)
-            {
-                //1er Cuadrante
-            }
-            else if (diferenciaEnX > 0 && diferenciaEnZ < 0)
-            {
-                //4to Cuadrante
-                anguloRotacion = 2*(float)Math.PI - anguloRotacion;
-            }
-            else
-            {
-                //2do Cuadrante
-                anguloRotacion = (float)Math.PI - anguloRotacion;
-            }
+            //El monster se acerca al personaje
+            ghost.Position = personaje.getPosition() + posicionLejana;
 
-            ghost.RotateY(anguloRotacion);
+            //Roto el mesh del monster
+            this.RotarMesh(personaje);
+        }
+
+        public void RotarMesh(Personaje personaje)
+        {
+
+            if (!this.lookAt.Equals(personaje.getPosition()))
+            {
+                float diferenciaEnX = personaje.getPosition().X - ghost.Position.X;
+                float diferenciaEnZ = personaje.getPosition().Z - ghost.Position.Z;
+
+                float anguloRotacion = (float)Math.Atan(diferenciaEnX / diferenciaEnZ);
+
+                if (diferenciaEnX < 0 && diferenciaEnZ < 0)
+                {
+                    //3er Cuadrante
+                    anguloRotacion = (float)Math.PI + anguloRotacion;
+                }
+                else if (diferenciaEnX > 0 && diferenciaEnZ > 0)
+                {
+                    //1er Cuadrante
+                }
+                else if (diferenciaEnX > 0 && diferenciaEnZ < 0)
+                {
+                    //4to Cuadrante
+                    anguloRotacion = 2 * (float)Math.PI - anguloRotacion;
+                }
+                else
+                {
+                    //2do Cuadrante
+                    anguloRotacion = (float)Math.PI - anguloRotacion;
+                }
+
+                ghost.RotateY(anguloRotacion);
+
+                this.lookAt = personaje.getPosition();
+            }
         }
     }
 }
