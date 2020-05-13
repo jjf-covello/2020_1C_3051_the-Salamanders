@@ -79,10 +79,10 @@ float4 psDefault(VS_OUTPUT input) : COLOR0
 {
 	float2 position = input.MeshPosition;
 	
-	float radioDeLuz = 0.5;
-	float radioDeLuzGrande = 0.75;
+	float radioDeLuz = 0.35;
+	float radioDeLuzGrande = 0.5;
 
-	float xAlCuadrado = position.x * position.x;
+	float xAlCuadrado = (position.x * position.x)/0.30;
 	float yAlCuadrado = position.y * position.y;
 
 	float suma = xAlCuadrado + yAlCuadrado;
