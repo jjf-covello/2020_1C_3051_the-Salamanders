@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.DirectX.DirectInput;
-using System;
 using System.Drawing;
 using System.Windows.Forms;
 using TGC.Core.Camara;
