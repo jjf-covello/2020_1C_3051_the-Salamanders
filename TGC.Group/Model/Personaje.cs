@@ -585,6 +585,8 @@ namespace TGC.Group.Model
 
         public void YouWin()
         {
+            var posicionInicial = new TGCVector3(0, 0, 0);
+
             if (this.notasRequeridas == 8 && this.getPosition() == posicionInicial)
             {
                 //Ganastre bro

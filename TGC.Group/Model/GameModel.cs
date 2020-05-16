@@ -10,6 +10,8 @@ using TGC.Core.Textures;
 using TGC.Core.Camara;
 using TGC.Core.Terrain;
 using System.Linq;
+using System;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
@@ -227,6 +229,9 @@ namespace TGC.Group.Model
             //Inicio el render de la escena, para ejemplos simples. Cuando tenemos postprocesado o shaders es mejor realizar las operaciones según nuestra conveniencia.
             PreRender();
 
+            //Pone el fondo negro en vez del azul feo ese
+            D3DDevice.Instance.Device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.Black, 1.0f, 0);
+            
             escenario.RenderEscenario();
             //personaje.RenderPersonaje(ElapsedTime);
             monster.RenderMonster();

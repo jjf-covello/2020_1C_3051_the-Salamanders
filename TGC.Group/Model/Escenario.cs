@@ -29,14 +29,16 @@ namespace TGC.Group.Model
         public void InstanciarEstructuras() //va en el init()
         {
             TgcSceneLoader loader = new TgcSceneLoader();
-            tgcScene = loader.loadSceneFromFile(MediaDir + "NuestrosModelos\\esteclaveee-TgcScene.xml");
+            tgcScene = loader.loadSceneFromFile(MediaDir + "NuestrosModelos\\SeguirConEste-TgcScene.xml");
         }
 
         public void InstanciarSkyBox()
         {
             //Configurar tamaño SkyBox
-            skyBox.Center = new TGCVector3(-250, 0, -1500);
-            skyBox.Size = new TGCVector3(15000, 15000, 15000);
+            skyBox.Center = new TGCVector3(-250, 1000, -1500);
+            skyBox.Size = new TGCVector3(30000, 5000, 30000);
+            
+            
 
             //Configurar las texturas para cada una de las 6 caras
             skyBox.setFaceTexture(TgcSkyBox.SkyFaces.Up, MediaDir + "Sky.jpg");
@@ -71,7 +73,7 @@ namespace TGC.Group.Model
 
             heightmap.Render();
 
-            //skyBox.Render();
+            skyBox.Render();
         }
 
         public void DisposeEscenario()
