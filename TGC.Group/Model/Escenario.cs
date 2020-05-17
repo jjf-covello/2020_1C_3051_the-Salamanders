@@ -18,7 +18,7 @@ namespace TGC.Group.Model
     public class Escenario
     {
         String MediaDir = "..\\..\\..\\Media\\";
-        private TgcScene tgcScene { get; set; }
+        public TgcScene tgcScene { get; set; }
         private TgcSimpleTerrain heightmap = new TgcSimpleTerrain();
         private TgcSkyBox skyBox = new TgcSkyBox();
         string currentHeightmap;
@@ -29,7 +29,7 @@ namespace TGC.Group.Model
         public void InstanciarEstructuras() //va en el init()
         {
             TgcSceneLoader loader = new TgcSceneLoader();
-            tgcScene = loader.loadSceneFromFile(MediaDir + "NuestrosModelos\\SeguirConEste-TgcScene.xml");
+            tgcScene = loader.loadSceneFromFile(MediaDir + "NuestrosModelos\\MapaConPinosFarolesVelasPilasMasPinos-TgcScene.xml");
         }
 
         public void InstanciarSkyBox()

@@ -15,6 +15,7 @@ using Device = Microsoft.DirectX.Direct3D.Device;
 using BulletSharp;
 using System.Collections;
 using TGC.Core.SceneLoader;
+using Microsoft.DirectX.Direct3D;
 
 namespace TGC.Group.Model
 {
@@ -68,7 +69,7 @@ namespace TGC.Group.Model
         /// <summary>
         /// Donde esta la camara, desde los ejes del mundo.
         /// </summary>
-        TGCVector3 eye;
+        public TGCVector3 eye;
 
         /// <summary>
         /// Hacia donde es arriba, desde los ejes del mundo.
@@ -171,6 +172,9 @@ namespace TGC.Group.Model
         /// <summary>
         /// Controla la captura del mouse.
         /// </summary>
+        /// 
+
+        public TGCVector3 posicionAnterior;
         public bool LockMouse
         {
             set
@@ -195,6 +199,7 @@ namespace TGC.Group.Model
 
             target = new TGCVector3(100f, 15f, 150f);
             eye = new TGCVector3(100f, 15f, 100f);
+            
 
             // \todo: configurable
             float half_box = 4.0f;
@@ -498,25 +503,45 @@ namespace TGC.Group.Model
             var movimiento = TGCVector3.Empty;
             var posicionOriginal = this.Position;
 
-           if(key== key_forward)                    
-                    movimiento.Z = -1;
+            var moving = false;
 
+            if (key== key_forward)
+            {
+                movimiento.Z = -1;
+                moving = true;
+            }                 
 
             if (key == key_left)
-                    movimiento.X = 1;
-
-
+            {
+                movimiento.X = 1;
+                moving = true;
+            }
+                   
             if (key == key_back)
-                    movimiento.Z = 1;
-
-            if (key == key_right)
-                    movimiento.X = -1;
+            {
+                movimiento.Z = 1;
+                moving = true;
+            }
                     
 
-            movimiento *= MovementSpeed * elapsedTime;
-            this.Position = this.Position + movimiento;
-            
-            //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
+            if (key == key_right)
+            {
+                movimiento.X = -1;
+                moving = true;
+            }
+
+            if (moving)
+            {
+                this.posicionAnterior = this.Position;
+
+                movimiento *= MovementSpeed * elapsedTime;
+                this.Position = this.Position + movimiento;
+                this.BoundingBox.move(movimiento);
+                //this.updateBoundingBox();
+
+                //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
+            }
+
             float rotY = input.XposRelative * rotationSpeed;
             float rotX = input.YposRelative * rotationSpeed;
             eye = this.Position;
@@ -526,13 +551,12 @@ namespace TGC.Group.Model
                 if (rotY != 0.0f || rotX != 0.0f)
                     look(rotX, rotY);
 
-               
-
                 Cursor.Position = windowCenter;
-                
-            }
 
-                this.SetCamera(eye, target);
+            }
+            this.SetCamera(eye, target);
+
+
 
             //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
 
@@ -593,6 +617,10 @@ namespace TGC.Group.Model
             } 
         }
 
+        public void moverALoNegro(TGCVector3 unaPosicion)
+        {
+            this.Position = unaPosicion;
+        }
     }
      
 }

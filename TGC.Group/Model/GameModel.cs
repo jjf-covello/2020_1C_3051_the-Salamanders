@@ -12,6 +12,7 @@ using TGC.Core.Terrain;
 using System.Linq;
 using System;
 using Microsoft.DirectX.Direct3D;
+using TGC.Core.Collision;
 
 namespace TGC.Group.Model
 {
@@ -197,7 +198,7 @@ namespace TGC.Group.Model
                     personaje.getItemEnMano().FinDuracion(personaje);
                 }
             }
-            
+
             //camaraInterna.updateCamera(ElapsedTime, Input);
 
             //Capturar Input Mouse
@@ -216,6 +217,24 @@ namespace TGC.Group.Model
                 }
             }
             */
+
+
+            //COLISIONES
+            
+            var chocaron = escenario.tgcScene.Meshes.Any(mesh => TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, personaje.BoundingBox));
+            if (chocaron)
+            {
+                //personaje.setCamera(personaje.posicionAnterior, personaje.getLookAt());
+                personaje.moverALoNegro(personaje.posicionAnterior);
+            }
+            
+            var chocoConMonster = TgcCollisionUtils.classifyBoxBox(monster.ghost.BoundingBox, personaje.BoundingBox);
+            if (chocoConMonster.Equals(TgcCollisionUtils.BoxBoxResult.Adentro) || chocoConMonster.Equals(TgcCollisionUtils.BoxBoxResult.Atravesando))
+            {
+                //personaje.setCamera(personaje.posicionAnterior, personaje.getLookAt());
+                personaje.moverALoNegro(personaje.posicionAnterior);
+            }
+            
             PostUpdate();
         }
 

@@ -17,7 +17,7 @@ namespace TGC.Group.Model
 {
     class Monster
     {
-        TgcMesh ghost;
+        public TgcMesh ghost;
         String MediaDir = "..\\..\\..\\Media\\";
         TGCVector3 lookAt = new TGCVector3();
         public void InstanciarMonster()
