@@ -15,7 +15,7 @@ using TGC.Core.SceneLoader;
 
 namespace TGC.Group.Model
 {
-    class Monster
+    public class Monster
     {
         public TgcMesh ghost;
         String MediaDir = "..\\..\\..\\Media\\";

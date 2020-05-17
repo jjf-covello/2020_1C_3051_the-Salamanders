@@ -111,32 +111,32 @@ namespace TGC.Group.Model
                 if (Input.keyDown(Key.W))
                 {
                     //Le digo al wachin que vaya para adelante
-                    personaje.MoverPersonaje('W', ElapsedTime, Input);
+                    personaje.MoverPersonaje('W', ElapsedTime, Input, escenario, monster);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.A))
                 {
                     //Le digo al wachin que vaya para la izquierda
-                    personaje.MoverPersonaje('A', ElapsedTime, Input);
+                    personaje.MoverPersonaje('A', ElapsedTime, Input, escenario, monster);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.S))
                 {
                     //Le digo al wachin que vaya a para atras
-                    personaje.MoverPersonaje('S', ElapsedTime, Input);
+                    personaje.MoverPersonaje('S', ElapsedTime, Input, escenario, monster);
                     caminar = true;
                 }
 
                 if (Input.keyDown(Key.D))
                 {
                     //Le digo al wachin que vaya para la derecha
-                    personaje.MoverPersonaje('D', ElapsedTime, Input);
+                    personaje.MoverPersonaje('D', ElapsedTime, Input, escenario, monster);
                     caminar = true;
                 }
 
-                personaje.MoverPersonaje('x', ElapsedTime, Input);
+                personaje.MoverPersonaje('x', ElapsedTime, Input, escenario, monster);
 
                 if (Input.keyPressed(Key.E))
                 {
@@ -217,23 +217,6 @@ namespace TGC.Group.Model
                 }
             }
             */
-
-
-            //COLISIONES
-            
-            var chocaron = escenario.tgcScene.Meshes.Any(mesh => TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, personaje.BoundingBox));
-            if (chocaron)
-            {
-                //personaje.setCamera(personaje.posicionAnterior, personaje.getLookAt());
-                personaje.moverALoNegro(personaje.posicionAnterior);
-            }
-            
-            var chocoConMonster = TgcCollisionUtils.classifyBoxBox(monster.ghost.BoundingBox, personaje.BoundingBox);
-            if (chocoConMonster.Equals(TgcCollisionUtils.BoxBoxResult.Adentro) || chocoConMonster.Equals(TgcCollisionUtils.BoxBoxResult.Atravesando))
-            {
-                //personaje.setCamera(personaje.posicionAnterior, personaje.getLookAt());
-                personaje.moverALoNegro(personaje.posicionAnterior);
-            }
             
             PostUpdate();
         }

@@ -16,6 +16,8 @@ using BulletSharp;
 using System.Collections;
 using TGC.Core.SceneLoader;
 using Microsoft.DirectX.Direct3D;
+using TGC.Core.Collision;
+using TGC.Core.SkeletalAnimation;
 
 namespace TGC.Group.Model
 {
@@ -26,7 +28,7 @@ namespace TGC.Group.Model
         public int notasRequeridas = 8;
         public bool tieneLuz = false;
         public float tiempoSinLuz = 0;
-
+        public TgcMesh meshPersonaje;
         IEquipable itemEnMano;
 
         public IEquipable getItemEnMano()
@@ -174,6 +176,8 @@ namespace TGC.Group.Model
         /// </summary>
         /// 
 
+        private TgcSkeletalMesh personaje;
+
         public TGCVector3 posicionAnterior;
         public bool LockMouse
         {
@@ -192,6 +196,7 @@ namespace TGC.Group.Model
             get { return lockMouse; }
         }
 
+        String MediaDir = "..\\..\\..\\Media\\";
         public Personaje()
         {
             positionChanged = true;
@@ -199,7 +204,20 @@ namespace TGC.Group.Model
 
             target = new TGCVector3(100f, 15f, 150f);
             eye = new TGCVector3(100f, 15f, 100f);
-            
+
+            var loader = new TgcSceneLoader();
+            var scene2 = loader.loadSceneFromFile(MediaDir + "Modelame\\GhostGrande-TgcScene.xml"); //Con demon no funca, aca rompe
+
+            //Solo nos interesa el primer modelo de esta escena (tiene solo uno)
+            meshPersonaje = scene2.Meshes[0];
+
+            const float cte = 15f;
+            meshPersonaje.Position = new TGCVector3(100f, cte, 100f);
+            meshPersonaje.Scale = new TGCVector3(0f, 0.5f, 0f);
+
+            const int cteY = -295;
+            meshPersonaje.BoundingBox = new TgcBoundingAxisAlignBox(new TGCVector3(-20, cteY, -20), new TGCVector3(20, 20, 20));
+
 
             // \todo: configurable
             float half_box = 4.0f;
@@ -497,7 +515,7 @@ namespace TGC.Group.Model
            // MovementSound.dispose();
         }
 
-        public void MoverPersonaje(char key, float elapsedTime, TgcD3dInput input)
+        public void MoverPersonaje(char key, float elapsedTime, TgcD3dInput input, Escenario escenario, Monster monster)
         {
             MovementSpeed = 800.0f;
             var movimiento = TGCVector3.Empty;
@@ -505,24 +523,24 @@ namespace TGC.Group.Model
 
             var moving = false;
 
-            if (key== key_forward)
+            if (key == key_forward)
             {
                 movimiento.Z = -1;
                 moving = true;
-            }                 
+            }
 
             if (key == key_left)
             {
                 movimiento.X = 1;
                 moving = true;
             }
-                   
+
             if (key == key_back)
             {
                 movimiento.Z = 1;
                 moving = true;
             }
-                    
+
 
             if (key == key_right)
             {
@@ -534,12 +552,33 @@ namespace TGC.Group.Model
             {
                 this.posicionAnterior = this.Position;
 
-                movimiento *= MovementSpeed * elapsedTime;
-                this.Position = this.Position + movimiento;
-                this.BoundingBox.move(movimiento);
-                //this.updateBoundingBox();
+                var lastPos = meshPersonaje.Position;
 
-                //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
+                movimiento *= MovementSpeed * elapsedTime;
+                meshPersonaje.Position = meshPersonaje.Position + movimiento;
+                meshPersonaje.updateBoundingBox();
+
+                //COLISIONES
+
+                bool chocaron = escenario.tgcScene.Meshes.Any(mesh => TgcCollisionUtils.testAABBAABB(mesh.BoundingBox, meshPersonaje.BoundingBox));
+                if (chocaron)
+                {
+                    meshPersonaje.Position = lastPos;
+                }
+
+                bool chocoConMonster = TgcCollisionUtils.testAABBAABB(monster.ghost.BoundingBox, meshPersonaje.BoundingBox);
+                if (chocoConMonster)
+                {
+                    meshPersonaje.Position = lastPos;
+                }
+
+                meshPersonaje.Transform = TGCMatrix.Scaling(meshPersonaje.Scale) *
+                                    TGCMatrix.RotationYawPitchRoll(meshPersonaje.Rotation.Y, meshPersonaje.Rotation.X, meshPersonaje.Rotation.Z) *
+                                    TGCMatrix.Translation(meshPersonaje.Position);
+
+                this.Position = meshPersonaje.Position;
+                //Hacer que la camara siga al personaje en su nueva posicion
+                //camaraInterna.Target = this.Position;
             }
 
             float rotY = input.XposRelative * rotationSpeed;
@@ -556,11 +595,6 @@ namespace TGC.Group.Model
             }
             this.SetCamera(eye, target);
 
-
-
-            //target.TransformCoordinate(TGCMatrix.Translation(this.Position));
-
-            //this.Transform = TGCMatrix.Translation(this.Position);
         }
 
         public void aumentarTiempoSinLuz()
@@ -619,7 +653,9 @@ namespace TGC.Group.Model
 
         public void moverALoNegro(TGCVector3 unaPosicion)
         {
-            this.Position = unaPosicion;
+            //boundingBox.move(this.Position - unaPosicion);
+            //this.Position = unaPosicion;
+
         }
     }
      
