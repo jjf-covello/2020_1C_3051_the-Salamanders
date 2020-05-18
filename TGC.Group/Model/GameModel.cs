@@ -260,7 +260,6 @@ namespace TGC.Group.Model
                 this.updateLighting();
             }
 
-            //personaje.animarPersonaje(caminar);
             personaje.updateCamera(ElapsedTime, Input);
             
             personaje.aumentarTiempoSinLuz();
@@ -335,36 +334,36 @@ namespace TGC.Group.Model
 
                 // Estos son paramentros del current shader, si cambias el shader chequear los parametros o rompe
                 mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
-                mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
-                mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
-                mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+                mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+                mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
                 mesh.Effect.SetValue("materialSpecularExp", 9f);
                 mesh.Effect.SetValue("eyePosition", TGCVector3.Vector3ToFloat4Array(personaje.eye));
-                mesh.Effect.SetValue("lightAttenuation", 0.3f);
-                mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("lightAttenuation", personaje.itemEnMano.getValorAtenuacion());
+                mesh.Effect.SetValue("lightColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
 
 
                 if (personaje.tieneLuz)
                 {
 
                     
-                    //Actualzar posición de la luz
+                    //Actualizar posición de la luz
                     TGCVector3 lightPos = personaje.getPosition() + new TGCVector3(0, 100, 0) + new TGCVector3(FastMath.Sin(5.5f) * -150, 0, FastMath.Cos(5.5f) * -150);
 
                     //Normalizar direccion de la luz
-                    TGCVector3 lightDir = new TGCVector3(-FastMath.Sin(5.5f), 0, -FastMath.Cos(5.5f));
+                    TGCVector3 lightDir = personaje.forward;
                     lightDir.Normalize();
 
                     //Cargar variables shader de la luz
                     mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(lightPos));
                     mesh.Effect.SetValue("spotLightDir", TGCVector3.Vector3ToFloat4Array(lightDir));
-                    mesh.Effect.SetValue("lightIntensity", 60f);
+                    mesh.Effect.SetValue("lightIntensity", personaje.itemEnMano.getValorLuminico());
                     mesh.Effect.SetValue("spotLightAngleCos", FastMath.ToRad(20));
-                    mesh.Effect.SetValue("spotLightExponent", 5);
+                    mesh.Effect.SetValue("spotLightExponent", 25);
                 }
                 else
                 {
-                    mesh.Effect.SetValue("lightIntensity", 100f);
+                    mesh.Effect.SetValue("lightIntensity", 50f);
                     mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(personaje.getPosition()));
                 }
             }

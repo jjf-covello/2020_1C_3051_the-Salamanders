@@ -62,7 +62,7 @@ namespace TGC.Group.Model
         /// <summary>
         /// Hacia adonde es "adelante" (Z+ desde la perspectiva del que camina).
         /// </summary>
-        TGCVector3 forward;
+        public TGCVector3 forward;
 
         /// <summary>
         /// Hacia donde mira la camara, desde los ejes del mundo.
@@ -97,7 +97,7 @@ namespace TGC.Group.Model
         /// <summary>
         /// La rotacion total sobre el eje x.
         /// </summary>
-        float absoluteRotationX;
+        public float absoluteRotationX;
 
         char key_left;
         char key_back;
@@ -208,6 +208,12 @@ namespace TGC.Group.Model
 
             target = new TGCVector3(100f, 15f, 150f);
             eye = new TGCVector3(100f, 15f, 100f);
+
+            ItemVacioDefault itemDefault = new ItemVacioDefault();
+
+            objetosInteractuables.Add(itemDefault);
+
+            this.itemEnMano = itemDefault;
 
             var loader = new TgcSceneLoader();
             var scene2 = loader.loadSceneFromFile(MediaDir + "Modelame\\GhostGrande-TgcScene.xml"); //Con demon no funca, aca rompe
@@ -352,9 +358,7 @@ namespace TGC.Group.Model
         /// <param name="rotY"></param>
         private void look(float rotX, float rotY)
         {
-            // controlar los limites de rotacion sobre X (pitch)
-            //
-
+            // Controlar los limites de rotacion sobre X (pitch)
            
             absoluteRotationX += rotX;
 
@@ -388,8 +392,7 @@ namespace TGC.Group.Model
             result = TGCVector3.Transform(zAxis, deltaRM);
             zAxis = new TGCVector3(result.X, result.Y, result.Z);
 
-            // recalcular las dependencias
-            //
+            // Recalcular las dependencias
 
             forward = TGCVector3.Cross(xAxis, up);
             

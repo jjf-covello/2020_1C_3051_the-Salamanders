@@ -82,7 +82,7 @@ namespace TGC.Group.Model
 
         public float getValorLuminico()
         {
-            throw new NotImplementedException();
+            return 150f;
         }
 
         public float getValorAtenuacion()
@@ -92,7 +92,7 @@ namespace TGC.Group.Model
 
         public Color getLuzColor()
         {
-            throw new NotImplementedException();
+            return Color.DarkOrange;
         }
     }
 }
