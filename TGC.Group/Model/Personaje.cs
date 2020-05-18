@@ -18,6 +18,7 @@ using TGC.Core.SceneLoader;
 using Microsoft.DirectX.Direct3D;
 using TGC.Core.Collision;
 using TGC.Core.SkeletalAnimation;
+using System.Runtime.InteropServices.WindowsRuntime;
 
 namespace TGC.Group.Model
 {
@@ -29,7 +30,7 @@ namespace TGC.Group.Model
         public bool tieneLuz = false;
         public float tiempoSinLuz = 0;
         public TgcMesh meshPersonaje;
-        IEquipable itemEnMano;
+        public IEquipable itemEnMano;
 
         public IEquipable getItemEnMano()
         {
@@ -685,6 +686,16 @@ namespace TGC.Group.Model
             return inclusive
                 ? lower <= num && num <= upper
                 : lower < num && num < upper;
+        }
+
+        public float getAngulo()
+        {
+            return 0;
+        }
+
+        public float getExponente()
+        {
+            return 0;
         }
     }
 }

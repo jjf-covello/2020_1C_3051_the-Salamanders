@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Drawing;
 
 namespace TGC.Group.Model
 {
@@ -15,5 +16,11 @@ namespace TGC.Group.Model
         void DisminuirDuracion();
 
         float getDuracion();
+
+        float getValorLuminico();
+
+        float getValorAtenuacion();
+        Color getLuzColor();
+
     }
 }
