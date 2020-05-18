@@ -178,6 +178,7 @@ namespace TGC.Group.Model
 
                 personaje.MoverPersonaje('x', ElapsedTime, Input, escenario, monster);
 
+            /*
                 if (caminar)
                 {
                     var escalera = escenario.GetEscalera();
@@ -193,11 +194,20 @@ namespace TGC.Group.Model
 
 
                 }
+                */
 
                 if (Input.keyPressed(Key.E))
                 {
                     //Interacuar con meshes
                     Console.WriteLine("x: {0} \ny: {1} \nz: {2}", personaje.getPosition().X, personaje.getPosition().Y, personaje.getPosition().Z);
+
+                    var objetoInteractuable = this.objetosInteractuables.OrderBy(mesh => this.DistanciaA(mesh)).First();
+
+                    if (this.DistanciaA(objetoInteractuable) < 300)
+                    {
+                        objetosInteractuables.Remove(objetoInteractuable);
+                        objetoInteractuable.Interactuar(personaje);
+                    }
 
                     if(personaje.Entre((int)personaje.getPosition().X, -1300, -800) &&
                           personaje.Entre((int)personaje.getPosition().Z, -8100, -6800) )
@@ -284,6 +294,14 @@ namespace TGC.Group.Model
             PostUpdate();
         }
 
+        private double DistanciaA(IInteractuable mesh)
+        {
+            TGCVector3 vector = personaje.getPosition() - mesh.getPosition();
+
+            return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Z, 2));
+            
+        }
+
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
         ///     Escribir aquí todo el código referido al renderizado.
@@ -324,5 +342,6 @@ namespace TGC.Group.Model
             //personaje.DisposePersonaje();
             monster.DisposeMonster();
         }
+
     }
 }
