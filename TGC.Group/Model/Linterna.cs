@@ -50,7 +50,7 @@ namespace TGC.Group.Model
         {
             if (this.estaEncendida)
             {
-                this.ApagarLinterna();
+                this.ApagarLinterna(personaje);
             }
             else
             {
@@ -70,7 +70,7 @@ namespace TGC.Group.Model
 
         public void FinDuracion(Personaje personaje)
         {
-            this.ApagarLinterna();
+            this.ApagarLinterna(personaje);
         }
 
         public void EncenderLinterna()
@@ -78,9 +78,10 @@ namespace TGC.Group.Model
             this.estaEncendida = true;
         }
 
-        public void ApagarLinterna()
+        public void ApagarLinterna(Personaje personaje)
         {
             this.estaEncendida = false;
+            personaje.itemEnMano = (IEquipable)personaje.objetosInteractuables.Find(itemDefault => itemDefault is ItemVacioDefault);
         }
 
         public void Recargar()
