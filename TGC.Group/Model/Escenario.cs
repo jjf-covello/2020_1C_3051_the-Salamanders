@@ -10,7 +10,7 @@ using TGC.Core.SceneLoader;
 using TGC.Core.Textures;
 using TGC.Core.Camara;
 using TGC.Core.Terrain;
-
+using System.Collections.Generic;
 
 namespace TGC.Group.Model
 {
@@ -26,6 +26,7 @@ namespace TGC.Group.Model
         float currentScaleXZ;
         float currentScaleY;
         public Escalera escalera = null;
+        public List<TgcMesh> listaDePostes = new List<TgcMesh>();
 
         public Escalera GetEscalera() {
 

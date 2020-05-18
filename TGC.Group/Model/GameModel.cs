@@ -86,8 +86,8 @@ namespace TGC.Group.Model
             //ESTE VA QUERIENDO
             Camara = personaje;
             //Camara.SetCamera(personaje.PosicionMesh(), new TGCVector3(0, 0, 0));
-            
-           
+
+
             //Internamente el framework construye la matriz de view con estos dos vectores.
             //Luego en nuestro juego tendremos que crear una cámara que cambie la matriz de view con variables como movimientos o animaciones de escenas
 
@@ -133,6 +133,10 @@ namespace TGC.Group.Model
                 Escalera unaEscalera = escenario.GetEscalera();
                 unaEscalera.escalones.Add(mesh);
                 //creo la escalera
+            }
+            if (mesh.Name.Contains("posteLuz"))
+            {
+                escenario.listaDePostes.Add(mesh);       
             }
 
 
@@ -311,6 +315,14 @@ namespace TGC.Group.Model
             
         }
 
+        private double DistanciaA2(TgcMesh mesh)
+        {
+            TGCVector3 vector = personaje.getPosition() - mesh.BoundingBox.PMin;
+
+            return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Z, 2));
+
+        }
+
         private void updateLighting()
         {
             Microsoft.DirectX.Direct3D.Effect currentShader;
@@ -325,6 +337,27 @@ namespace TGC.Group.Model
             {
                 currentShader = TGCShaders.Instance.TgcMeshPointLightShader;
             }
+
+            /*escenario.listaDePostes.ForEach(unPoste => {
+            escenario.tgcScene.Meshes.ForEach(meshQueRodeaAlPoste =>{
+                meshQueRodeaAlPoste.Effect = TGCShaders.Instance.TgcMeshPointLightShader;
+                meshQueRodeaAlPoste.Technique = TGCShaders.Instance.GetTGCMeshTechnique(meshQueRodeaAlPoste.RenderType);
+
+                meshQueRodeaAlPoste.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                meshQueRodeaAlPoste.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                meshQueRodeaAlPoste.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+                meshQueRodeaAlPoste.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+                meshQueRodeaAlPoste.Effect.SetValue("materialSpecularExp", 9f);
+                meshQueRodeaAlPoste.Effect.SetValue("eyePosition", TGCVector3.Vector3ToFloat4Array(unPoste.BoundingBox.PMin));
+                meshQueRodeaAlPoste.Effect.SetValue("lightAttenuation", 0.3f);
+                meshQueRodeaAlPoste.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
+
+                meshQueRodeaAlPoste.Effect.SetValue("lightIntensity", 50f);
+                meshQueRodeaAlPoste.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(unPoste.BoundingBox.PMin));
+            });
+            });*/
+
+
 
             //Aplicar a cada mesh el shader actual
             foreach (TgcMesh mesh in escenario.tgcScene.Meshes)
@@ -342,11 +375,20 @@ namespace TGC.Group.Model
                 mesh.Effect.SetValue("lightAttenuation", personaje.itemEnMano.getValorAtenuacion());
                 mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
 
-
-                if (personaje.tieneLuz)
+                var unPoste = escenario.listaDePostes.OrderBy(poste => this.DistanciaA2(poste)).First();
+                if (DistanciaA2(unPoste)<2000)
+                {   
+                    //Se prende el farol mas cercano
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.DarkOrange));
+                    mesh.Effect.SetValue("lightIntensity", 50f);
+                    mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(unPoste.BoundingBox.PMin));
+                }
+                else
                 {
 
-                    
+                
+                if (personaje.tieneLuz)
+                {
                     //Actualizar posición de la luz
                     TGCVector3 lightPos = personaje.getPosition() + new TGCVector3(0, 100, 0) + new TGCVector3(FastMath.Sin(5.5f) * -150, 0, FastMath.Cos(5.5f) * -150);
 
@@ -366,6 +408,8 @@ namespace TGC.Group.Model
                 {
                     mesh.Effect.SetValue("lightIntensity", 50f);
                     mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(personaje.getPosition()));
+                    
+                }
                 }
             }
         }
