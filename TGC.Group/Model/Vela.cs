@@ -73,6 +73,7 @@ namespace TGC.Group.Model
         public void DesecharVela(Personaje personaje)
         {
             personaje.objetosInteractuables.Remove(this);
+            personaje.itemEnMano = (IEquipable)personaje.objetosInteractuables.Find(itemDefault => itemDefault is ItemVacioDefault);
         }
 
         public float getDuracion()
@@ -82,12 +83,12 @@ namespace TGC.Group.Model
 
         public float getValorLuminico()
         {
-            return 150f;
+            return 400f;
         }
 
         public float getValorAtenuacion()
         {
-            throw new NotImplementedException();
+            return 0.3f;
         }
 
         public Color getLuzColor()

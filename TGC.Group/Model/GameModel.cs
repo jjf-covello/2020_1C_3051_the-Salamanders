@@ -239,13 +239,13 @@ namespace TGC.Group.Model
                 if (Input.keyPressed(Key.Q))
                 {
                     //Cambiar entre vela y linterna (si hubiere)
-                    if(personaje.getItemEnMano() is Linterna && personaje.objetosInteractuables.Any(objeto => objeto is Vela))
+                    if((personaje.getItemEnMano() is Linterna || personaje.getItemEnMano() is ItemVacioDefault) && personaje.objetosInteractuables.Any(objeto => objeto is Vela))
                     {
                         var vela = (Vela)personaje.objetosInteractuables.Find(objeto => objeto is Vela);
                         personaje.setItemEnMano(vela);
                     }
 
-                    if (personaje.getItemEnMano() is Vela && personaje.objetosInteractuables.Any(objeto => objeto is Linterna))
+                    if ((personaje.getItemEnMano() is Vela || personaje.getItemEnMano() is ItemVacioDefault) && personaje.objetosInteractuables.Any(objeto => objeto is Linterna))
                     {
                         var linterna = (Linterna)personaje.objetosInteractuables.Find(objeto => objeto is Linterna);
                         personaje.setItemEnMano(linterna);
@@ -334,13 +334,13 @@ namespace TGC.Group.Model
 
                 // Estos son paramentros del current shader, si cambias el shader chequear los parametros o rompe
                 mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
-                mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
-                mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
-                mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+                mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
                 mesh.Effect.SetValue("materialSpecularExp", 9f);
                 mesh.Effect.SetValue("eyePosition", TGCVector3.Vector3ToFloat4Array(personaje.eye));
                 mesh.Effect.SetValue("lightAttenuation", personaje.itemEnMano.getValorAtenuacion());
-                mesh.Effect.SetValue("lightColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+                mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
 
 
                 if (personaje.tieneLuz)
@@ -360,6 +360,7 @@ namespace TGC.Group.Model
                     mesh.Effect.SetValue("lightIntensity", personaje.itemEnMano.getValorLuminico());
                     mesh.Effect.SetValue("spotLightAngleCos", FastMath.ToRad(20));
                     mesh.Effect.SetValue("spotLightExponent", 25);
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
                 }
                 else
                 {
