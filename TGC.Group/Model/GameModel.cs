@@ -13,6 +13,10 @@ using System.Linq;
 using System;
 using Microsoft.DirectX.Direct3D;
 using TGC.Core.Collision;
+using System.Collections.Generic;
+using System.Security;
+using TGC.Core.Shaders;
+using TGC.Core.Utils;
 
 namespace TGC.Group.Model
 {
@@ -39,7 +43,8 @@ namespace TGC.Group.Model
         //Depreca3 personaje = new Depreca3();
         Personaje personaje = new Personaje();
         Monster monster = new Monster();
-      
+        public List<IInteractuable> objetosInteractuables = new List<IInteractuable>();
+
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
 
@@ -66,6 +71,7 @@ namespace TGC.Group.Model
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
             monster.InstanciarMonster();
+            CrearObjetosEnEscenario();
 
             /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
@@ -92,6 +98,45 @@ namespace TGC.Group.Model
         ///     Se debe escribir toda la lógica de computo del modelo, así como también verificar entradas del usuario y reacciones
         ///     ante ellas.
         /// </summary>
+        /// 
+
+        private void CrearObjetosEnEscenario()
+        {
+            escenario.tgcScene.Meshes.ForEach(mesh => CrearInteractuableAsociado(mesh));
+        }
+
+        private void CrearInteractuableAsociado(TgcMesh mesh)
+        {
+            Console.WriteLine(mesh.Name);
+            IInteractuable interactuable;
+            if (mesh.Name.Equals("notas"))
+            {
+                interactuable = new Nota(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Equals("vela"))
+            {
+                interactuable = new Vela(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Equals("pilas"))
+            {
+                interactuable = new Pila(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Contains("puerta"))
+            {
+                //tengo que crear una puerta exterior o interior
+            }
+            if (mesh.Name.Contains("Escalon"))
+            {
+                Escalera unaEscalera = escenario.GetEscalera();
+                unaEscalera.escalones.Add(mesh);
+                //creo la escalera
+            }
+
+
+        }
         public override void Update()
         {
             PreUpdate();
@@ -136,15 +181,41 @@ namespace TGC.Group.Model
 
                 personaje.MoverPersonaje('x', ElapsedTime, Input, escenario, monster);
 
+            /*
+                if (caminar)
+                {
+                    var escalera = escenario.GetEscalera();
+                    var escalonActual = escalera.escalonActual;
+
+                    if (personaje.DistanciaHacia(escalonActual) < 1000)
+                    {
+
+                        escalera.pasarPorEscalon(personaje);// muy dudoso
+
+                    }
+
+
+
+                }
+                */
+
                 if (Input.keyPressed(Key.E))
                 {
                     //Interacuar con meshes
                     Console.WriteLine("x: {0} \ny: {1} \nz: {2}", personaje.getPosition().X, personaje.getPosition().Y, personaje.getPosition().Z);
 
+                    var objetoInteractuable = this.objetosInteractuables.OrderBy(mesh => this.DistanciaA(mesh)).First();
+
+                    if (this.DistanciaA(objetoInteractuable) < 300)
+                    {
+                        objetosInteractuables.Remove(objetoInteractuable);
+                        objetoInteractuable.Interactuar(personaje);
+                    }
+
                     if(personaje.Entre((int)personaje.getPosition().X, -1300, -800) &&
                           personaje.Entre((int)personaje.getPosition().Z, -8100, -6800) )
                     {
-                        Puerta unaPuerta = new Puerta();
+                        Puerta unaPuerta = new Puerta(escenario.tgcScene.Meshes[0]);// esto es para que sea polimorfico nomas
                         unaPuerta.Interactuar(personaje);
                     }
                 }
@@ -180,6 +251,13 @@ namespace TGC.Group.Model
                         personaje.setItemEnMano(linterna);
                     }
                 }
+
+                if (Input.keyPressed(Key.H))
+                {
+                    personaje.tieneLuz = !personaje.tieneLuz;
+                }
+
+                this.updateLighting();
             }
 
             //personaje.animarPersonaje(caminar);
@@ -226,6 +304,72 @@ namespace TGC.Group.Model
             PostUpdate();
         }
 
+        private double DistanciaA(IInteractuable mesh)
+        {
+            TGCVector3 vector = personaje.getPosition() - mesh.getPosition();
+
+            return Math.Sqrt(Math.Pow(vector.X, 2) + Math.Pow(vector.Z, 2));
+            
+        }
+
+        private void updateLighting()
+        {
+            Microsoft.DirectX.Direct3D.Effect currentShader;
+
+            //Con luz: Cambiar el shader actual por el shader default que trae el framework para iluminacion dinamica con PointLight
+            if (personaje.tieneLuz)
+            {
+
+                currentShader = TGCShaders.Instance.TgcMeshSpotLightShader;
+            }
+            else
+            {
+                currentShader = TGCShaders.Instance.TgcMeshPointLightShader;
+            }
+
+            //Aplicar a cada mesh el shader actual
+            foreach (TgcMesh mesh in escenario.tgcScene.Meshes)
+            {
+                mesh.Effect = currentShader;
+                mesh.Technique = TGCShaders.Instance.GetTGCMeshTechnique(mesh.RenderType);
+
+                // Estos son paramentros del current shader, si cambias el shader chequear los parametros o rompe
+                mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
+                mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
+                mesh.Effect.SetValue("materialSpecularExp", 9f);
+                mesh.Effect.SetValue("eyePosition", TGCVector3.Vector3ToFloat4Array(personaje.eye));
+                mesh.Effect.SetValue("lightAttenuation", 0.3f);
+                mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
+
+
+                if (personaje.tieneLuz)
+                {
+
+                    
+                    //Actualzar posición de la luz
+                    TGCVector3 lightPos = personaje.getPosition() + new TGCVector3(0, 100, 0) + new TGCVector3(FastMath.Sin(5.5f) * -150, 0, FastMath.Cos(5.5f) * -150);
+
+                    //Normalizar direccion de la luz
+                    TGCVector3 lightDir = new TGCVector3(-FastMath.Sin(5.5f), 0, -FastMath.Cos(5.5f));
+                    lightDir.Normalize();
+
+                    //Cargar variables shader de la luz
+                    mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(lightPos));
+                    mesh.Effect.SetValue("spotLightDir", TGCVector3.Vector3ToFloat4Array(lightDir));
+                    mesh.Effect.SetValue("lightIntensity", 60f);
+                    mesh.Effect.SetValue("spotLightAngleCos", FastMath.ToRad(20));
+                    mesh.Effect.SetValue("spotLightExponent", 5);
+                }
+                else
+                {
+                    mesh.Effect.SetValue("lightIntensity", 100f);
+                    mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(personaje.getPosition()));
+                }
+            }
+        }
+
         /// <summary>
         ///     Se llama cada vez que hay que refrescar la pantalla.
         ///     Escribir aquí todo el código referido al renderizado.
@@ -266,5 +410,6 @@ namespace TGC.Group.Model
             //personaje.DisposePersonaje();
             monster.DisposeMonster();
         }
+
     }
 }

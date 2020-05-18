@@ -25,7 +25,15 @@ namespace TGC.Group.Model
         string currentTexture;
         float currentScaleXZ;
         float currentScaleY;
+        public Escalera escalera = null;
 
+        public Escalera GetEscalera() {
+
+            if (escalera.Equals(null)) {
+                escalera = new Escalera();
+            }
+            return escalera;
+        }
         public void InstanciarEstructuras() //va en el init()
         {
             TgcSceneLoader loader = new TgcSceneLoader();
