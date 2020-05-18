@@ -65,9 +65,7 @@ namespace TGC.Group.Model
             escenario.InstanciarEstructuras();
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
-            //personaje.InstanciarPersonaje();
             monster.InstanciarMonster();
-           
 
             /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
@@ -141,7 +139,14 @@ namespace TGC.Group.Model
                 if (Input.keyPressed(Key.E))
                 {
                     //Interacuar con meshes
-                    
+                    Console.WriteLine("x: {0} \ny: {1} \nz: {2}", personaje.getPosition().X, personaje.getPosition().Y, personaje.getPosition().Z);
+
+                    if(personaje.Entre((int)personaje.getPosition().X, -1300, -800) &&
+                          personaje.Entre((int)personaje.getPosition().Z, -8100, -6800) )
+                    {
+                        Puerta unaPuerta = new Puerta();
+                        unaPuerta.Interactuar(personaje);
+                    }
                 }
 
                 if (Input.keyPressed(Key.F))

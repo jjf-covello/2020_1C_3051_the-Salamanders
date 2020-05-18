@@ -197,8 +197,11 @@ namespace TGC.Group.Model
         }
 
         String MediaDir = "..\\..\\..\\Media\\";
+        public bool estoyAdentro;
         public Personaje()
         {
+            estoyAdentro = true;
+
             positionChanged = true;
             rotationChanged = true;
 
@@ -657,8 +660,33 @@ namespace TGC.Group.Model
             //this.Position = unaPosicion;
 
         }
+
+        public void TeletrasportarmeA(TGCVector3 posicionActual)
+        {
+            meshPersonaje.Position = posicionActual;
+            meshPersonaje.updateBoundingBox();
+
+            meshPersonaje.Transform = TGCMatrix.Scaling(meshPersonaje.Scale) *
+                                   TGCMatrix.RotationYawPitchRoll(meshPersonaje.Rotation.Y, meshPersonaje.Rotation.X, meshPersonaje.Rotation.Z) *
+                                   TGCMatrix.Translation(meshPersonaje.Position);
+
+            this.Position = meshPersonaje.Position;
+        }
+
+        public bool Entre(int numero, int min, int max)
+        {
+            return Between(numero, min, max);
+        }
+
+        public bool Between(int num, int lower, int upper)
+        {
+            bool inclusive = false; 
+
+            return inclusive
+                ? lower <= num && num <= upper
+                : lower < num && num < upper;
+        }
     }
-     
 }
 
 
