@@ -13,6 +13,7 @@ using System.Linq;
 using System;
 using Microsoft.DirectX.Direct3D;
 using TGC.Core.Collision;
+using System.Collections.Generic;
 
 namespace TGC.Group.Model
 {
@@ -39,7 +40,8 @@ namespace TGC.Group.Model
         //Depreca3 personaje = new Depreca3();
         Personaje personaje = new Personaje();
         Monster monster = new Monster();
-      
+        public List<IInteractuable> objetosInteractuables = new List<IInteractuable>();
+
         //Caja que se muestra en el ejemplo.
         private TGCBox Box { get; set; }
 
@@ -66,6 +68,7 @@ namespace TGC.Group.Model
             escenario.InstanciarHeightmap();
             escenario.InstanciarSkyBox();
             monster.InstanciarMonster();
+            CrearObjetosEnEscenario();
 
             /*
             var cameraPosition = new TGCVector3(-2500, 0, -15000);
@@ -92,6 +95,45 @@ namespace TGC.Group.Model
         ///     Se debe escribir toda la lógica de computo del modelo, así como también verificar entradas del usuario y reacciones
         ///     ante ellas.
         /// </summary>
+        /// 
+
+        private void CrearObjetosEnEscenario()
+        {
+            escenario.tgcScene.Meshes.ForEach(mesh => CrearInteractuableAsociado(mesh));
+        }
+
+        private void CrearInteractuableAsociado(TgcMesh mesh)
+        {
+            Console.WriteLine(mesh.Name);
+            IInteractuable interactuable;
+            if (mesh.Name.Equals("notas"))
+            {
+                interactuable = new Nota(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Equals("vela"))
+            {
+                interactuable = new Vela(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Equals("pilas"))
+            {
+                interactuable = new Pila(mesh);
+                objetosInteractuables.Add(interactuable);
+            }
+            if (mesh.Name.Contains("puerta"))
+            {
+                //tengo que crear una puerta exterior o interior
+            }
+            if (mesh.Name.Contains("Escalon"))
+            {
+                Escalera unaEscalera = escenario.GetEscalera();
+                unaEscalera.escalones.Add(mesh);
+                //creo la escalera
+            }
+
+
+        }
         public override void Update()
         {
             PreUpdate();
@@ -136,6 +178,22 @@ namespace TGC.Group.Model
 
                 personaje.MoverPersonaje('x', ElapsedTime, Input, escenario, monster);
 
+                if (caminar)
+                {
+                    var escalera = escenario.GetEscalera();
+                    var escalonActual = escalera.escalonActual;
+
+                    if (personaje.DistanciaHacia(escalonActual) < 1000)
+                    {
+
+                        escalera.pasarPorEscalon(personaje);// muy dudoso
+
+                    }
+
+
+
+                }
+
                 if (Input.keyPressed(Key.E))
                 {
                     //Interacuar con meshes
@@ -144,7 +202,7 @@ namespace TGC.Group.Model
                     if(personaje.Entre((int)personaje.getPosition().X, -1300, -800) &&
                           personaje.Entre((int)personaje.getPosition().Z, -8100, -6800) )
                     {
-                        Puerta unaPuerta = new Puerta();
+                        Puerta unaPuerta = new Puerta(escenario.tgcScene.Meshes[0]);// esto es para que sea polimorfico nomas
                         unaPuerta.Interactuar(personaje);
                     }
                 }

@@ -697,6 +697,14 @@ namespace TGC.Group.Model
         {
             return 0;
         }
+        internal double DistanciaHacia(TgcMesh mesh)
+        {
+            var distancia = mesh.BoundingBox.PMin - this.Position;
+            var distanciaTotal = Math.Sqrt(Math.Pow(distancia.X, 2) + Math.Pow(distancia.Y, 2) + Math.Pow(distancia.Z, 2));
+            return distanciaTotal;
+
+
+        }
     }
 }
 
