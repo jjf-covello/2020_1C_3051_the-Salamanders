@@ -254,7 +254,7 @@ namespace TGC.Group.Model
 
                 if (Input.keyPressed(Key.H))
                 {
-                    personaje.tieneLuz = true;
+                    personaje.tieneLuz = !personaje.tieneLuz;
                 }
 
                 this.updateLighting();
@@ -333,6 +333,7 @@ namespace TGC.Group.Model
                 mesh.Effect = currentShader;
                 mesh.Technique = TGCShaders.Instance.GetTGCMeshTechnique(mesh.RenderType);
 
+                // Estos son paramentros del current shader, si cambias el shader chequear los parametros o rompe
                 mesh.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
                 mesh.Effect.SetValue("materialAmbientColor", ColorValue.FromColor(Color.White));
                 mesh.Effect.SetValue("materialDiffuseColor", ColorValue.FromColor(Color.White));
