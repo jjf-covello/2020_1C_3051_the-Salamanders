@@ -43,9 +43,9 @@ namespace TGC.Group.Model
         }
 
         //Cuando el player no usa una fuente luminosa en X tiempo
-        public void Aparecer(Personaje personaje)
+        public bool Aparecer(Personaje personaje)
         {
-            if (!personaje.tieneLuz && personaje.tiempoSinLuz > 3500)
+            if (!personaje.tieneLuz && !personaje.estoyEscondido && personaje.tiempoSinLuz > 3500)
             {
                 if (personaje.tiempoSinLuz == 4000)
                 {
@@ -56,9 +56,11 @@ namespace TGC.Group.Model
                 {
                     //El monster aparece detrás del personaje
                     this.AparecerAlLadoDelPersonaje(personaje);
-                    personaje.GameOver(ghost.Position);
+                    personaje.AsustarAlPersonaje(ghost.Position);
+                    return true;
                 }
             }
+            return false;
         }
 
         //Cuando el player usa una fuente luminosa o llega a un refugio

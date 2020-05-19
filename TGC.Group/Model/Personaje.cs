@@ -26,7 +26,7 @@ namespace TGC.Group.Model
     {
         public List<IInteractuable> objetosInteractuables = new List<IInteractuable>();
         public int cantidadNotas;
-        public int notasRequeridas = 8;
+        public int notasRequeridas = 0;
         public bool tieneLuz = false;
         public float tiempoSinLuz = 0;
         public TgcMesh meshPersonaje;
@@ -199,12 +199,17 @@ namespace TGC.Group.Model
 
         String MediaDir = "..\\..\\..\\Media\\";
         public bool estoyAdentro;
+        public bool estoyEscondido;
+        TGCVector3 posicionInicial; 
         public Personaje()
         {
             estoyAdentro = true;
+            estoyEscondido = false;
 
             positionChanged = true;
             rotationChanged = true;
+
+            posicionInicial = new TGCVector3(100f, 15f, 100f); //Estaria piola que arranque afuera del indoor
 
             target = new TGCVector3(100f, 15f, 150f);
             eye = new TGCVector3(100f, 15f, 100f);
@@ -287,8 +292,6 @@ namespace TGC.Group.Model
         /// </summary>
         public void updateCamera(float elapsedTime, TgcD3dInput input)
         {
-            this.YouWin();
-
             if (!Enable)
                 return;
 
@@ -639,7 +642,7 @@ namespace TGC.Group.Model
             return this.getItemEnMano() != null;
         }
 
-        public void GameOver(TGCVector3 posicionDelMonster)
+        public void AsustarAlPersonaje(TGCVector3 posicionDelMonster)
         {   
             TGCVector3 vectorDesfasaje = new TGCVector3(0, 350, 0);
 
@@ -648,21 +651,18 @@ namespace TGC.Group.Model
             this.setCamera(eye, vectorDesfasaje);
         }
 
+        public void GameOver()
+        {
+            //Por ahora lo dejamos asi hasta que tengamos una interfaz grafica
+            Console.WriteLine("Game Over");
+        }
         public void YouWin()
         {
-            var posicionInicial = new TGCVector3(0, 0, 0);
-
-            if (this.notasRequeridas == 8 && this.getPosition() == posicionInicial)
+            if (this.notasRequeridas == 4 && this.getPosition() == posicionInicial)
             {
-                //Ganastre bro
-            } 
-        }
-
-        public void moverALoNegro(TGCVector3 unaPosicion)
-        {
-            //boundingBox.move(this.Position - unaPosicion);
-            //this.Position = unaPosicion;
-
+                //Por ahora lo dejamos asi hasta que tengamos una interfaz grafica
+                Console.WriteLine("Ganaste!!");
+            }
         }
 
         public void TeletrasportarmeA(TGCVector3 posicionActual)
