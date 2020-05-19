@@ -230,7 +230,7 @@ namespace TGC.Group.Model
             meshPersonaje.Position = new TGCVector3(100f, cte, 100f);
             meshPersonaje.Scale = new TGCVector3(0f, 0.5f, 0f);
 
-            const int cteY = -295;
+            const int cteY = -570;
             meshPersonaje.BoundingBox = new TgcBoundingAxisAlignBox(new TGCVector3(-20, cteY, -20), new TGCVector3(20, 20, 20));
 
 
@@ -532,6 +532,7 @@ namespace TGC.Group.Model
             var posicionOriginal = this.Position;
 
             var moving = false;
+            var estoyFlotando = false;
 
             if (key == key_forward)
             {
@@ -557,6 +558,13 @@ namespace TGC.Group.Model
                 movimiento.X = -1;
                 moving = true;
             }
+
+            if (key == ' ')
+            {
+                movimiento.Y = 1;
+                moving = true;
+            }
+            
 
             if (moving)
             {

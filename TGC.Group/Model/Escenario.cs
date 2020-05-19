@@ -19,7 +19,7 @@ namespace TGC.Group.Model
     {
         String MediaDir = "..\\..\\..\\Media\\";
         public TgcScene tgcScene { get; set; }
-        private TgcSimpleTerrain heightmap = new TgcSimpleTerrain();
+        public TgcSimpleTerrain heightmap = new TgcSimpleTerrain();
         private TgcSkyBox skyBox = new TgcSkyBox();
         string currentHeightmap;
         string currentTexture;
