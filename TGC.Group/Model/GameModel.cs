@@ -144,12 +144,6 @@ namespace TGC.Group.Model
                 interactuable = new Escondite(mesh);
                 objetosInteractuables.Add(interactuable);
             }
-            if (mesh.Name.Equals("Pino"))
-            {
-               
-            }
-
-
         }
         public override void Update()
         {
@@ -318,7 +312,7 @@ namespace TGC.Group.Model
         private void updateLighting()
         {
             Microsoft.DirectX.Direct3D.Effect currentShader;
-
+            TgcMesh unPoste;
 
             //Con luz: Cambiar el shader actual por el shader default que trae el framework para iluminacion dinamica con PointLight
             if (personaje.tieneLuz)
@@ -331,13 +325,8 @@ namespace TGC.Group.Model
                 currentShader = TGCShaders.Instance.TgcMeshPointLightShader;
             }
 
-
-            var listaMeshesSinPinos = escenario.tgcScene.Meshes.FindAll(unMesh => !unMesh.Name.Contains("ArbolBosque")
-                                                                        && !unMesh.Name.Contains("Pino")
-                                                                        && !unMesh.Name.Contains("Arbusto"));
-
             //Aplicar a cada mesh el shader actual
-            foreach (TgcMesh mesh in listaMeshesSinPinos)
+            foreach (TgcMesh mesh in escenario.tgcScene.Meshes)
             {
                 mesh.Effect = currentShader;
                 mesh.Technique = TGCShaders.Instance.GetTGCMeshTechnique(mesh.RenderType);
@@ -352,46 +341,53 @@ namespace TGC.Group.Model
                 mesh.Effect.SetValue("lightAttenuation", personaje.itemEnMano.getValorAtenuacion());
                 mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
 
-                var unPoste = escenario.listaDePostes.OrderBy(poste => this.DistanciaA2(poste)).First();
+                unPoste = escenario.listaDePostes.OrderBy(poste => this.DistanciaA2(poste)).First();
                 if (DistanciaA2(unPoste) < 2000)
                 {
                     //Se prende el farol mas cercano
-                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.DarkOrange));
+                    mesh.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
                     mesh.Effect.SetValue("lightIntensity", 50f);
                     mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(unPoste.BoundingBox.PMin));
                 }
                 else
                 {
-
                     if (personaje.tieneLuz)
                     {
-                        //Actualizar posición de la luz
-                        TGCVector3 lightPos = personaje.getPosition() + new TGCVector3(0, 100, 0) + new TGCVector3(FastMath.Sin(5.5f) * -150, 0, FastMath.Cos(5.5f) * -150);
-
-                        //Normalizar direccion de la luz
-                        TGCVector3 lightDir = personaje.forward;
-                        lightDir.Normalize();
-
-                        //Cargar variables shader de la luz
-                        mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(lightPos));
-                        mesh.Effect.SetValue("spotLightDir", TGCVector3.Vector3ToFloat4Array(lightDir));
-                        mesh.Effect.SetValue("lightIntensity", personaje.itemEnMano.getValorLuminico());
-                        mesh.Effect.SetValue("spotLightAngleCos", FastMath.ToRad(20));
-                        mesh.Effect.SetValue("spotLightExponent", 25);
-                        mesh.Effect.SetValue("lightColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+                        this.AplicarShaderSpotLight(mesh);
                     }
                     else
                     {
                         mesh.Effect.SetValue("lightIntensity", 50f);
                         mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(personaje.getPosition()));
-
                     }
+                   
                 }
             }
+        }
 
+        public void AplicarShaderSpotLight(TgcMesh mesh)
+        {
+            //Actualizar posición de la luz
+            TGCVector3 lightPos = personaje.getPosition() + new TGCVector3(0, 100, 0) + new TGCVector3(FastMath.Sin(5.5f) * -150, 0, FastMath.Cos(5.5f) * -150);
 
+            //Normalizar direccion de la luz
+            TGCVector3 lightDir = personaje.forward;
+            lightDir.Normalize();
+
+            //Cargar variables shader de la luz
+            mesh.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(lightPos));
+            mesh.Effect.SetValue("spotLightDir", TGCVector3.Vector3ToFloat4Array(lightDir));
+            mesh.Effect.SetValue("lightIntensity", personaje.itemEnMano.getValorLuminico());
+            mesh.Effect.SetValue("spotLightAngleCos", FastMath.ToRad(20));
+            mesh.Effect.SetValue("spotLightExponent", 25);
+            mesh.Effect.SetValue("lightColor", ColorValue.FromColor(personaje.itemEnMano.getLuzColor()));
+        }
+        public void AplicarShaderAlHeightmap()
+        {
+            Microsoft.DirectX.Direct3D.Effect currentShader;
+            currentShader = TGCShaders.Instance.TgcMeshPointLightShader;
             escenario.heightmap.Effect = currentShader;
-            escenario.heightmap.Technique = TGCShaders.Instance.GetTGCMeshTechnique(TgcMesh.MeshRenderType.DIFFUSE_MAP);
+            escenario.heightmap.Technique = TGCShaders.Instance.GetTGCMeshTechnique(TgcMesh.MeshRenderType.DIFFUSE_MAP_AND_LIGHTMAP);
 
             // Estos son paramentros del current shader, si cambias el shader chequear los parametros o rompe
             escenario.heightmap.Effect.SetValue("materialEmissiveColor", ColorValue.FromColor(Color.Black));
@@ -400,7 +396,7 @@ namespace TGC.Group.Model
             escenario.heightmap.Effect.SetValue("materialSpecularColor", ColorValue.FromColor(Color.White));
             escenario.heightmap.Effect.SetValue("materialSpecularExp", 9f);
             escenario.heightmap.Effect.SetValue("eyePosition", TGCVector3.Vector3ToFloat4Array(personaje.eye));
-            escenario.heightmap.Effect.SetValue("lightAttenuation", personaje.itemEnMano.getValorAtenuacion());
+            escenario.heightmap.Effect.SetValue("lightAttenuation", 0.3f);
             escenario.heightmap.Effect.SetValue("lightColor", ColorValue.FromColor(Color.White));
             escenario.heightmap.Effect.SetValue("lightIntensity", 50f);
             escenario.heightmap.Effect.SetValue("lightPosition", TGCVector3.Vector3ToFloat4Array(personaje.getPosition()));
