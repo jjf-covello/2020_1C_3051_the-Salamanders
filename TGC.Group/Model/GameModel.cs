@@ -144,6 +144,8 @@ namespace TGC.Group.Model
                 interactuable = new Escondite(mesh);
                 objetosInteractuables.Add(interactuable);
             }
+
+            objetosInteractuables.Add((IInteractuable)escenario.GetEscalera());
         }
         public override void Update()
         {
@@ -158,40 +160,51 @@ namespace TGC.Group.Model
 
             if (personaje.LockMouse)
             {
-
-                if (Input.keyDown(Key.W))
+                if (!personaje.estoyUsandoEscaleras)
                 {
-                    //Le digo al wachin que vaya para adelante
-                    personaje.MoverPersonaje('W', ElapsedTime, Input, escenario, monster);
-                    caminar = true;
+                    if (Input.keyDown(Key.W))
+                    {
+                        //Le digo al wachin que vaya para adelante
+                        if (!(personaje.key_left == 'W' || DistanciaA2(escenario.escalera.escalonActual) < 100) && !(personaje.key_back == 'W' || DistanciaA2(escenario.escalera.escalonActual) < 100))
+                        {
+                            personaje.MoverPersonaje('W', ElapsedTime, Input, escenario, monster);
+                            caminar = true;
+                        }
+                    }
+
+                    if (Input.keyDown(Key.A))
+                    {
+                        if (!(personaje.key_left == 'A' || DistanciaA2(escenario.escalera.escalonActual) < 100) && !(personaje.key_back == 'A' || DistanciaA2(escenario.escalera.escalonActual) < 100))
+                        {
+                            //Le digo al wachin que vaya para la izquierda
+                            personaje.MoverPersonaje('A', ElapsedTime, Input, escenario, monster);
+                            caminar = true;
+                        }
+                    }
+
+                    if (Input.keyDown(Key.S))
+                    {
+                        if (!(personaje.key_left == 'S' || DistanciaA2(escenario.escalera.escalonActual) < 100) && !(personaje.key_back == 'S' || DistanciaA2(escenario.escalera.escalonActual) < 100))
+                        {
+                            //Le digo al wachin que vaya para la izquierda
+                            personaje.MoverPersonaje('S', ElapsedTime, Input, escenario, monster);
+                            caminar = true;
+                        }
+                    }
+
+                    if (Input.keyDown(Key.D))
+                    {
+                        if (!(personaje.key_left == 'D' || DistanciaA2(escenario.escalera.escalonActual) < 100) && !(personaje.key_back == 'D' || DistanciaA2(escenario.escalera.escalonActual) < 100))
+                        {
+                            //Le digo al wachin que vaya para la izquierda
+                            personaje.MoverPersonaje('D', ElapsedTime, Input, escenario, monster);
+                            caminar = true;
+                        }
+                    }
+
                 }
-
-                if (Input.keyDown(Key.A))
-                {
-                    //Le digo al wachin que vaya para la izquierda
-                    personaje.MoverPersonaje('A', ElapsedTime, Input, escenario, monster);
-                    caminar = true;
-                }
-
-                if (Input.keyDown(Key.S))
-                {
-                    //Le digo al wachin que vaya a para atras
-                    personaje.MoverPersonaje('S', ElapsedTime, Input, escenario, monster);
-                    caminar = true;
-                }
-
-                if (Input.keyDown(Key.D))
-                {
-                    //Le digo al wachin que vaya para la derecha
-                    personaje.MoverPersonaje('D', ElapsedTime, Input, escenario, monster);
-                    caminar = true;
-                }
-
-                if (Input.keyDown(Key.Space))
-                {
-                    //Le digo al wachin que vaya para la derecha
-                    personaje.MoverPersonaje(' ', ElapsedTime, Input, escenario, monster);
-                    caminar = true;
+                else {
+                    escenario.GetEscalera().Mover(personaje);
                 }
 
                 personaje.MoverPersonaje('x', ElapsedTime, Input, escenario, monster);

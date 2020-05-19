@@ -99,10 +99,10 @@ namespace TGC.Group.Model
         /// </summary>
         public float absoluteRotationX;
 
-        char key_left;
-        char key_back;
-        char key_right;
-        char key_forward;
+        public char key_left;
+        public char key_back;
+        public char key_right;
+        public char key_forward;
         public float MovementSpeed { get; set; }
 
         /// <summary>
@@ -200,7 +200,9 @@ namespace TGC.Group.Model
         String MediaDir = "..\\..\\..\\Media\\";
         public bool estoyAdentro;
         public bool estoyEscondido;
-        TGCVector3 posicionInicial; 
+        TGCVector3 posicionInicial;
+        internal bool estoyUsandoEscaleras=false;
+
         public Personaje()
         {
             estoyAdentro = true;
